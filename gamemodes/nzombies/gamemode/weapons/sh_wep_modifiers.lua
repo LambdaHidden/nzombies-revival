@@ -535,29 +535,29 @@ end, function(wep)
 		wep.CanAttach = function()
 			return false
 		end
-		wep.SetTFAAttachment = function(self, cat, id, nw)
-			if ( not self.Attachments[cat] ) then return false end
-			if id ~= self.Attachments[cat].sel then
-				local att_old = TFA.Attachments[ self.Attachments[cat].atts[ self.Attachments[cat].sel ] or -1 ]
+		wep.SetTFAAttachment = function(cat, id, nw, force)
+			if ( not wep.Attachments[cat] ) then return false end
+			if id ~= wep.Attachments[cat].sel then
+				local att_old = TFA.Attachments[ wep.Attachments[cat].atts[ wep.Attachments[cat].sel ] or -1 ]
 				if att_old then
-					att_old:Detach( self )
+					att_old:Detach( wep )
 				end
 
-				local att_neue = TFA.Attachments[ self.Attachments[cat].atts[ id ] or -1 ]
+				local att_neue = TFA.Attachments[ wep.Attachments[cat].atts[ id ] or -1 ]
 				if att_neue then
-					att_neue:Attach( self )
+					att_neue:Attach( wep )
 				end
 			end
-			self:ClearStatCache()
+			wep:ClearStatCache()
 			if id > 0 then
-				self.Attachments[cat].sel = id
+				wep.Attachments[cat].sel = id
 			else
-				self.Attachments[cat].sel = nil
+				wep.Attachments[cat].sel = nil
 			end
-			self:BuildAttachmentCache()
+			wep:BuildAttachmentCache()
 			if nw then
 				net.Start("TFA_Attachment_Set")
-				net.WriteEntity(self)
+				net.WriteEntity(wep)
 				net.WriteInt(cat,8)
 				net.WriteInt( id or -1 ,5)
 				if SERVER then
