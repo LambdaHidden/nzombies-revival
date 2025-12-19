@@ -146,6 +146,10 @@ function ENT:OnSpawn()
 
 			self:SetTarget(self:GetPriorityTarget())
 			self:SetInvulnerable(nil)
+			
+			if self:Health() <= 0 then
+				self:Remove()
+			end
 		end
 	end)
 

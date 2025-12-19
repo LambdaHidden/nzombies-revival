@@ -365,12 +365,6 @@ function ENT:RunBehaviour()
 	
 	timer.Simple(10, function()
 		if IsValid(self) then
-			local effectData = EffectData()
-			effectData:SetStart( self:GetPos() + Vector(0,0,32) )
-			effectData:SetOrigin( self:GetPos() + Vector(0,0,32) )
-			effectData:SetMagnitude(1)
-			util.Effect("zombie_spawn_dust", effectData)
-			
 			self:Remove()
 		end
 	end)

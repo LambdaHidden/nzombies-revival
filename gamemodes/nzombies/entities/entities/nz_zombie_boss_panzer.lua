@@ -198,6 +198,17 @@ function ENT:OnSpawn()
 			effectData:SetMagnitude(dur)
 			util.Effect("panzer_land_dust", effectData)
 		end)
+		
+		timer.Simple(dur, function()
+			if IsValid(self) and self:Health <= 0 then
+				self:Remove()
+				local effectData = EffectData()
+				effectData:SetStart( self:GetPos() )
+				effectData:SetOrigin( self:GetPos() )
+				effectData:SetMagnitude(2)
+				util.Effect("Explosion", effectData)
+			end
+		end)
 		self:PlaySequenceAndWait(seq)
 	end
 end
