@@ -222,15 +222,19 @@ function ENT:OnZombieDeath(dmgInfo)
 	self:Stop()
 	self:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
 	local seq, dur = self:LookupSequence(self.DeathSequences[math.random(#self.DeathSequences)])
-	self:ResetSequence(seq)
-	self:SetCycle(0)
+	timer.Simple(0.01, function() 
+		if IsValid(self) then
+			self:ResetSequence(seq)
+			self:SetCycle(0)
+		end
+	end)
 
-	timer.Simple(dur - 0.5, function()
+	timer.Simple(dur - 0.49, function()
 		if IsValid(self) then
 			self:EmitSound("nz/panzer/mech_explode.wav")
 		end
 	end)
-	timer.Simple(dur, function()
+	timer.Simple(dur + 0.01, function()
 		if IsValid(self) then
 			self:Remove()
 			local effectData = EffectData()

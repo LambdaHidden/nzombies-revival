@@ -161,18 +161,18 @@ function ENT:OnZombieDeath(dmgInfo)
 	self:SetRunSpeed(0)
 	self.loco:SetVelocity(Vector(0,0,0))
 	self:Stop()
+	self:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
 	local seqstr = self.DeathSequences[math.random(#self.DeathSequences)]
 	local seq, dur = self:LookupSequence(seqstr)
 	-- Delay it slightly; Seems to fix it instantly getting overwritten
-	timer.Simple(0, function() 
+	timer.Simple(0.01, function() 
 		if IsValid(self) then
 			self:ResetSequence(seq)
 			self:SetCycle(0)
-			self:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
 		end 
 	end)
 
-	timer.Simple(dur + 1, function()
+	timer.Simple(dur + 1.01, function()
 		if IsValid(self) then
 			self:Remove()
 		end
