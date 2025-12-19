@@ -190,7 +190,7 @@ function MenuToolBar:AddEntry( lbl, fontSize, cmd, args )
 	else
 		entry:SetFont( "pier_small" )
 	end
-	local nextPos = 300
+	local nextPos = 300*(ScrW()/1920)
 	for _, v in pairs( self.Entries ) do
 		nextPos = nextPos + v:GetWide() + 30
 	end
@@ -216,7 +216,7 @@ vgui.Register( "NZMainMenuToolBar", MenuToolBar, "DPanel")
 local MenuToolBarEntry = {}
 
 function MenuToolBarEntry:Init()
-	self:SetSize( 260, 60 )
+	self:SetSize( 260*(ScrW()/1920), 60 )
 	self:SetFont( "pier_large" )
 	self:SetContentAlignment( 5 )
 	self:SetTextColor( Color( 255, 255, 255 ) )
