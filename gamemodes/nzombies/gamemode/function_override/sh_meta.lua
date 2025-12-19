@@ -164,6 +164,10 @@ if SERVER then
 		if IsValid(oldwep) and !oldwep:IsSpecial() then
 			self.NZPrevWep = oldwep
 		end
+		
+		if isstring(wep) then
+			wep = self:GetWeapon(wep)
+		end
 		oldsetwep(self, wep)
 	end
 	
