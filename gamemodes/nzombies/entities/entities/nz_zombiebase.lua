@@ -329,41 +329,46 @@ function ENT:RunBehaviour()
 
 	self:SpawnZombie()
 
-	while (true) do
-		if self:Health() > 0 then
-			if !self:GetStop() then
-				self:SetTimedOut(false)
-				if self:HasTarget() then
-					local pathResult = self:ChaseTarget( {
-						maxage = 1,
-						draw = false,
-						tolerance = self:GetSpecialAnimation() and 0 or ((self:GetAttackRange() -30) > 0 ) and self:GetAttackRange() - 20
-					} )
-					if pathResult == "ok" then
-						if self:TargetInAttackRange() then
-							self:OnTargetInAttackRange()
-						else
-							self:TimeOut(1)
-						end
-					elseif pathResult == "timeout" then --asume pathing timedout, maybe we are stuck maybe we are blocked by barricades
-						local barricade, dir = self:CheckForBarricade()
-						if barricade then
-							self:OnBarricadeBlocking( barricade, dir )
-						else
-							self:OnPathTimeOut()
-						end
+	while (self:Health() > 0) do
+		if !self:GetStop() then
+			self:SetTimedOut(false)
+			if self:HasTarget() then
+				local pathResult = self:ChaseTarget( {
+					maxage = 1,
+					draw = false,
+					tolerance = self:GetSpecialAnimation() and 0 or ((self:GetAttackRange() -30) > 0 ) and self:GetAttackRange() - 20
+				} )
+				if pathResult == "ok" then
+					if self:TargetInAttackRange() then
+						self:OnTargetInAttackRange()
 					else
-						self:TimeOut(2)
-						-- path failed what should we do :/?
+						self:TimeOut(1)
+					end
+				elseif pathResult == "timeout" then --asume pathing timedout, maybe we are stuck maybe we are blocked by barricades
+					local barricade, dir = self:CheckForBarricade()
+					if barricade then
+						self:OnBarricadeBlocking( barricade, dir )
+					else
+						self:OnPathTimeOut()
 					end
 				else
-					self:OnNoTarget()
+					self:TimeOut(2)
+					-- path failed what should we do :/?
 				end
 			else
-				self:TimeOut(2)
+				self:OnNoTarget()
 			end
+		else
+			self:TimeOut(2)
 		end
 	end
+	
+	-- 10 second delay in case the zombie is doing a death animation
+	timer.Simple(10, function()
+		if IsValid(self) then
+			self:Remove()
+		end
+	end)
 end
 
 function ENT:Stop()
