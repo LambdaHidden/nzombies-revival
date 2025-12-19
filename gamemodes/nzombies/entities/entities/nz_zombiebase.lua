@@ -149,7 +149,6 @@ function ENT:Initialize()
 
 	self:SetCollisionBounds(Vector(-16,-16, 0), Vector(16, 16, 70))
 	
-	self:SetSolidMask(MASK_NPCSOLID)
 	self:SetCollisionGroup(COLLISION_GROUP_NPC)
 
 	self:SetActStage(0)
@@ -175,6 +174,9 @@ function ENT:Initialize()
 	self:SetSkin( math.random(self:SkinCount()) - 1 )
 
 	self.ZombieAlive = true
+	
+	self.DeadWalkingCount = 0
+	self.DeadWalkingTime = CurTime()
 
 end
 
@@ -327,7 +329,7 @@ function ENT:RunBehaviour()
 
 	self:SpawnZombie()
 
-	while (true) do
+	while (self:Health() > 0) do
 		if !self:GetStop() then
 			self:SetTimedOut(false)
 			if self:HasTarget() then
@@ -360,6 +362,18 @@ function ENT:RunBehaviour()
 			self:TimeOut(2)
 		end
 	end
+	
+	timer.Simple(10, function()
+		if IsValid(self) then
+			local effectData = EffectData()
+			effectData:SetStart( self:GetPos() + Vector(0,0,32) )
+			effectData:SetOrigin( self:GetPos() + Vector(0,0,32) )
+			effectData:SetMagnitude(1)
+			util.Effect("zombie_spawn_dust", effectData)
+			
+			self:Remove()
+		end
+	end)
 end
 
 function ENT:Stop()

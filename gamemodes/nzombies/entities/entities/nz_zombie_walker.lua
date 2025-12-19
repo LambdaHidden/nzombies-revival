@@ -258,7 +258,7 @@ function ENT:OnZombieDeath(dmgInfo)
 		-- Emit electrocution scream here when added
 		timer.Simple(dur, function()
 			if IsValid(self) then
-				self:BecomeRagdoll(dmgInfo)
+				self:BecomeRagdoll(DamageInfo()) -- using dmgInfo crashes game (memory access violation)
 			end
 		end)
 	else

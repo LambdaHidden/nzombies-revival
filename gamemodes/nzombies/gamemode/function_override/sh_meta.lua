@@ -165,10 +165,8 @@ if SERVER then
 			self.NZPrevWep = oldwep
 		end
 		
-		if isstring(wep) then
-			wep = self:GetWeapon(wep)
-		end
-		oldsetwep(self, wep)
+		oldsetwep(self, NULL)
+		self:SelectWeapon(wep)
 	end
 	
 else
