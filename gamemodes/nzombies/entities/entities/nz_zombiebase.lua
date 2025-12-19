@@ -148,6 +148,9 @@ function ENT:Initialize()
 	self:SetWalkSpeed( self.WalkSpeed ) --fallback
 
 	self:SetCollisionBounds(Vector(-16,-16, 0), Vector(16, 16, 70))
+	
+	self:SetSolidMask(MASK_NPCSOLID)
+	self:SetCollisionGroup(COLLISION_GROUP_NPC)
 
 	self:SetActStage(0)
 	self:SetSpecialAnimation(false)
@@ -198,7 +201,7 @@ function ENT:Think()
 			} )
 			if !tr.HitNonWorld then
 				self:SetSolidMask(MASK_NPCSOLID)
-				self:SetCollisionGroup(COLLISION_GROUP_PLAYER)
+				self:SetCollisionGroup(COLLISION_GROUP_NPC)
 				--print("No longer no-colliding")
 			end
 			--[[for _,ent in pairs(ents.FindInBox(self:GetPos() + Vector( -16, -16, 0 ), self:GetPos() + Vector( 16, 16, 70 ))) do
@@ -576,7 +579,7 @@ function ENT:OnNavAreaChanged(old, new)
 end
 
 function ENT:OnContact( ent )
-	if nzConfig.ValidEnemies[ent:GetClass()] and nzConfig.ValidEnemies[self:GetClass()] then
+	if !ent:IsPlayer() and nzConfig.ValidEnemies[ent:GetClass()] and nzConfig.ValidEnemies[self:GetClass()] then
 		--this is a poor approach to unstuck them when walking into each other
 		self.loco:Approach( self:GetPos() + Vector( math.Rand( -1, 1 ), math.Rand( -1, 1 ), 0 ) * 2000,1000)
 		--important if the get stuck on top of each other!
