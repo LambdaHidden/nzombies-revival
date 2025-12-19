@@ -17,7 +17,7 @@ end
 function ENT:Initialize()
 
 	self:SetModel( "models/hoff/props/mysterybox/box.mdl" )
-	self:PhysicsInit( SOLID_VPHYSICS )
+	self:PhysicsInit( SOLID_NONE )
 	self:SetMoveType( MOVETYPE_NONE )
 	self:SetSolid( SOLID_VPHYSICS )
 
