@@ -11,6 +11,7 @@ ENT.Instructions	= ""
 function ENT:Initialize()
 	self:SetModel( "models/nzprops/mysterybox_pile.mdl" )
 	self:SetColor( Color(255, 255, 255) )
+	self:PhysicsInit( SOLID_VPHYSICS )
 	self:SetMoveType( MOVETYPE_NONE )
 	self:SetSolid( SOLID_VPHYSICS )
 	--self:SetNotSolid(true)
