@@ -200,7 +200,7 @@ function ENT:OnSpawn()
 		end)
 		
 		timer.Simple(dur, function()
-			if IsValid(self) and self:Health <= 0 then
+			if IsValid(self) and self:Health() <= 0 then
 				self:Remove()
 				local effectData = EffectData()
 				effectData:SetStart( self:GetPos() )

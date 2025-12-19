@@ -242,7 +242,7 @@ function ENT:OnSpawn()
 	-- if we have a coroutine else just spawn the zombie without emerging for now.
 	if coroutine.running() then
 		timer.Simple(dur, function()
-			if IsValid(self) and self:Health <= 0 then
+			if IsValid(self) and self:Health() <= 0 then
 				self:BecomeRagdoll(DamageInfo())
 			end
 		end)
