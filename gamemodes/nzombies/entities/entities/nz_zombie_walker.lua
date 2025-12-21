@@ -263,7 +263,7 @@ function ENT:OnZombieDeath(dmgInfo)
 				self:ResetSequence(seq)
 				self:SetCycle(0)
 			end
-		end
+		end)
 		-- Emit electrocution scream here when added
 		timer.Simple(dur + 0.01, function()
 			if IsValid(self) then
