@@ -165,14 +165,14 @@ function ENT:OnZombieDeath(dmgInfo)
 	local seqstr = self.DeathSequences[math.random(#self.DeathSequences)]
 	local seq, dur = self:LookupSequence(seqstr)
 	-- Delay it slightly; Seems to fix it instantly getting overwritten
-	timer.Simple(0.01, function() 
+	timer.Simple(0, function() 
 		if IsValid(self) then
 			self:ResetSequence(seq)
 			self:SetCycle(0)
 		end 
 	end)
 
-	timer.Simple(dur + 1.01, function()
+	timer.Simple(dur + 1, function()
 		if IsValid(self) then
 			self:Remove()
 		end

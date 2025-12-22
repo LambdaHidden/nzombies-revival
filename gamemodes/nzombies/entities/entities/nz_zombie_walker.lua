@@ -258,14 +258,10 @@ function ENT:OnZombieDeath(dmgInfo)
 		self:Stop()
 		self:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
 		local seq, dur = self:LookupSequence(self.ElectrocutionSequences[math.random(#self.ElectrocutionSequences)])
-		timer.Simple(0.01, function() 
-			if IsValid(self) then
-				self:ResetSequence(seq)
-				self:SetCycle(0)
-			end
-		end)
+		self:ResetSequence(seq)
+		self:SetCycle(0)
 		-- Emit electrocution scream here when added
-		timer.Simple(dur + 0.01, function()
+		timer.Simple(dur, function()
 			if IsValid(self) then
 				self:BecomeRagdoll(DamageInfo()) -- using dmgInfo crashes game (memory access violation)
 			end
