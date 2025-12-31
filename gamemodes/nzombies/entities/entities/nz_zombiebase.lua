@@ -402,6 +402,14 @@ function ENT:RunBehaviour()
 	-- 10 second delay in case the zombie is doing a death animation
 	timer.Simple(10, function()
 		if IsValid(self) then
+			if self:IsInSight() then
+				local effectData = EffectData()
+				effectData:SetStart( self:GetPos() + Vector(0,0,32) )
+				effectData:SetOrigin( self:GetPos() + Vector(0,0,32) )
+				effectData:SetMagnitude(1)
+				util.Effect("zombie_spawn_dust", effectData)
+			end
+			
 			self:Remove()
 		end
 	end)
