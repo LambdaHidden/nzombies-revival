@@ -356,13 +356,13 @@ function ENT:RunBehaviour()
 						self:OnPathTimeOut()
 					end
 				else
-					self:TimeOut(2)
-					-- path failed what should we do :/?
-					
 					self.DeadWalkingCount = self.DeadWalkingCount + 1
-					if self.DeadWalkingCount >= 5 then
+					if self.DeadWalkingCount >= 3 then
 						self.DeadWalkingCount = 0
 						self:RespawnZombie()
+					else
+						self:TimeOut(2)
+						-- path failed what should we do :/?
 					end
 				end
 			else
@@ -548,14 +548,14 @@ function ENT:OnNoTarget()
 			if !self:IsInSight() then
 				self:RespawnZombie()
 			else
-				self:UpdateSequence() -- Updates the sequence to be idle animation
-				self:StartActivity(self.CalcIdeal) -- Starts the newly updated sequence
-				self:TimeOut(3) -- Time out even longer if seen
-				
 				self.DeadWalkingCount = self.DeadWalkingCount + 1
-				if self.DeadWalkingCount >= 5 then
+				if self.DeadWalkingCount >= 3 then
 					self.DeadWalkingCount = 0
 					self:RespawnZombie()
+				else
+					self:UpdateSequence() -- Updates the sequence to be idle animation
+					self:StartActivity(self.CalcIdeal) -- Starts the newly updated sequence
+					self:TimeOut(3) -- Time out even longer if seen
 				end
 			end
 		end
