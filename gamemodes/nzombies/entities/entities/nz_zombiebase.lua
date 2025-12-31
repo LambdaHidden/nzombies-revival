@@ -176,7 +176,8 @@ function ENT:Initialize()
 	self.ZombieAlive = true
 	
 	self.DeadWalkingCount = 0
-	self.DeadWalkingTime = CurTime() + 1
+	self.DeadWalkingTime = CurTime()
+	
 end
 
 --init for class related attributes hooks etc...
@@ -358,14 +359,10 @@ function ENT:RunBehaviour()
 					self:TimeOut(2)
 					-- path failed what should we do :/?
 					
-					if CurTime() >= self.DeadWalkingTime then
-						self.DeadWalkingCount = self.DeadWalkingCount + 1
-						self.DeadWalkingTime = CurTime() + 1
-						
-						if self.DeadWalkingCount >= 10 then
-							self.DeadWalkingCount = 0
-							self:RespawnZombie()
-						end
+					self.DeadWalkingCount = self.DeadWalkingCount + 1
+					if self.DeadWalkingCount >= 5 then
+						self.DeadWalkingCount = 0
+						self:RespawnZombie()
 					end
 				end
 			else
@@ -555,14 +552,10 @@ function ENT:OnNoTarget()
 				self:StartActivity(self.CalcIdeal) -- Starts the newly updated sequence
 				self:TimeOut(3) -- Time out even longer if seen
 				
-				if CurTime() >= self.DeadWalkingTime then
-					self.DeadWalkingCount = self.DeadWalkingCount + 1
-					self.DeadWalkingTime = CurTime() + 1
-						
-					if self.DeadWalkingCount >= 10 then
-						self.DeadWalkingCount = 0
-						self:RespawnZombie()
-					end
+				self.DeadWalkingCount = self.DeadWalkingCount + 1
+				if self.DeadWalkingCount >= 5 then
+					self.DeadWalkingCount = 0
+					self:RespawnZombie()
 				end
 			end
 		end
