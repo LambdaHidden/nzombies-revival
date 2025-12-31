@@ -176,8 +176,7 @@ function ENT:Initialize()
 	self.ZombieAlive = true
 	
 	self.DeadWalkingCount = 0
-	self.DeadWalkingTime = CurTime()
-
+	self.DeadWalkingTime = CurTime() + 1
 end
 
 --init for class related attributes hooks etc...
@@ -344,6 +343,10 @@ function ENT:RunBehaviour()
 					else
 						self:TimeOut(1)
 					end
+					
+					if self.DeadWalkingCount ~= 0 then
+						self.DeadWalkingCount = 0
+					end
 				elseif pathResult == "timeout" then --asume pathing timedout, maybe we are stuck maybe we are blocked by barricades
 					local barricade, dir = self:CheckForBarricade()
 					if barricade then
@@ -354,6 +357,16 @@ function ENT:RunBehaviour()
 				else
 					self:TimeOut(2)
 					-- path failed what should we do :/?
+					
+					if CurTime() >= self.DeadWalkingTime then
+						self.DeadWalkingCount = self.DeadWalkingCount + 1
+						self.DeadWalkingTime = CurTime() + 1
+						
+						if self.DeadWalkingCount >= 10 then
+							self.DeadWalkingCount = 0
+							self:RespawnZombie()
+						end
+					end
 				end
 			else
 				self:OnNoTarget()
@@ -534,10 +547,6 @@ function ENT:OnNoTarget()
 		if self:IsValidTarget(newtarget) then
 			self:SetTarget(newtarget)
 		else
-			self:RespawnZombie()
-			
-			-- Having this allows the zombies to be stalled indefinitely. Let's not have that happen.
-			--[[
 			-- If not visible to players respawn immediately
 			if !self:IsInSight() then
 				self:RespawnZombie()
@@ -545,8 +554,17 @@ function ENT:OnNoTarget()
 				self:UpdateSequence() -- Updates the sequence to be idle animation
 				self:StartActivity(self.CalcIdeal) -- Starts the newly updated sequence
 				self:TimeOut(3) -- Time out even longer if seen
+				
+				if CurTime() >= self.DeadWalkingTime then
+					self.DeadWalkingCount = self.DeadWalkingCount + 1
+					self.DeadWalkingTime = CurTime() + 1
+						
+					if self.DeadWalkingCount >= 10 then
+						self.DeadWalkingCount = 0
+						self:RespawnZombie()
+					end
+				end
 			end
-			]]
 		end
 	end
 end
