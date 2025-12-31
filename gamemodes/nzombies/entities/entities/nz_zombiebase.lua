@@ -534,6 +534,10 @@ function ENT:OnNoTarget()
 		if self:IsValidTarget(newtarget) then
 			self:SetTarget(newtarget)
 		else
+			self:RespawnZombie()
+			
+			-- Having this allows the zombies to be stalled indefinitely. Let's not have that happen.
+			--[[
 			-- If not visible to players respawn immediately
 			if !self:IsInSight() then
 				self:RespawnZombie()
@@ -542,6 +546,7 @@ function ENT:OnNoTarget()
 				self:StartActivity(self.CalcIdeal) -- Starts the newly updated sequence
 				self:TimeOut(3) -- Time out even longer if seen
 			end
+			]]
 		end
 	end
 end
@@ -1079,7 +1084,8 @@ end
 
 --we do our own jump since the loco one is a bit weird.
 function ENT:Jump()
-	if CurTime() < self:GetLastLand() + 0.5 or navmesh.GetNavArea(self:GetPos(), 50):HasAttributes( NAV_MESH_NO_JUMP ) then return end
+	local navArea = (navmesh and navmesh.GetNavArea(self:GetPos(), 50)) or nil
+	if CurTime() < self:GetLastLand() + 0.5 or (navArea and navArea:HasAttributes( NAV_MESH_NO_JUMP )) then return end
 	if !self:IsOnGround() then return end
 	self.loco:SetDesiredSpeed( 450 )
 	self.loco:SetAcceleration( 5000 )
