@@ -241,11 +241,13 @@ function ENT:Think()
 				if tr.Hit then
 					--if there bounding box is intersecting with something there is now way we can unstuck them just respawn.
 					--make a dust cloud to make it look less ugly
-					local effectData = EffectData()
-					effectData:SetStart( self:GetPos() + Vector(0,0,32) )
-					effectData:SetOrigin( self:GetPos() + Vector(0,0,32) )
-					effectData:SetMagnitude(1)
-					util.Effect("zombie_spawn_dust", effectData)
+					if self:IsInSight() then
+						local effectData = EffectData()
+						effectData:SetStart( self:GetPos() + Vector(0,0,32) )
+						effectData:SetOrigin( self:GetPos() + Vector(0,0,32) )
+						effectData:SetMagnitude(1)
+						util.Effect("zombie_spawn_dust", effectData)
+					end
 
 					self:RespawnZombie()
 					self:SetStuckCounter( 0 )
@@ -262,6 +264,14 @@ function ENT:Think()
 				end
 
 				if self:GetStuckCounter() > 5 then
+					if self:IsInSight() then
+						local effectData = EffectData()
+						effectData:SetStart( self:GetPos() + Vector(0,0,32) )
+						effectData:SetOrigin( self:GetPos() + Vector(0,0,32) )
+						effectData:SetMagnitude(1)
+						util.Effect("zombie_spawn_dust", effectData)
+					end
+				
 					--Worst case:
 					--respawn the zombie after 32 seconds with no postion change
 					self:RespawnZombie()
@@ -277,6 +287,14 @@ function ENT:Think()
 		self:SoundThink()
 
 		if self:ZombieWaterLevel() == 3 then
+			if self:IsInSight() then
+				local effectData = EffectData()
+				effectData:SetStart( self:GetPos() + Vector(0,0,32) )
+				effectData:SetOrigin( self:GetPos() + Vector(0,0,32) )
+				effectData:SetMagnitude(1)
+				util.Effect("zombie_spawn_dust", effectData)
+			end
+		
 			self:RespawnZombie()
 		end
 
@@ -357,9 +375,17 @@ function ENT:RunBehaviour()
 					end
 				else
 					self.DeadWalkingCount = self.DeadWalkingCount + 1
-					if self.DeadWalkingCount >= 3 then
-						self.DeadWalkingCount = 0
+					if self.DeadWalkingCount >= 5 then
+						if self:IsInSight() then
+							local effectData = EffectData()
+							effectData:SetStart( self:GetPos() + Vector(0,0,32) )
+							effectData:SetOrigin( self:GetPos() + Vector(0,0,32) )
+							effectData:SetMagnitude(1)
+							util.Effect("zombie_spawn_dust", effectData)
+						end
+						
 						self:RespawnZombie()
+						self.DeadWalkingCount = 0
 					else
 						self:TimeOut(2)
 						-- path failed what should we do :/?
@@ -549,9 +575,15 @@ function ENT:OnNoTarget()
 				self:RespawnZombie()
 			else
 				self.DeadWalkingCount = self.DeadWalkingCount + 1
-				if self.DeadWalkingCount >= 3 then
-					self.DeadWalkingCount = 0
+				if self.DeadWalkingCount >= 5 then
+					local effectData = EffectData()
+					effectData:SetStart( self:GetPos() + Vector(0,0,32) )
+					effectData:SetOrigin( self:GetPos() + Vector(0,0,32) )
+					effectData:SetMagnitude(1)
+					util.Effect("zombie_spawn_dust", effectData)
+					
 					self:RespawnZombie()
+					self.DeadWalkingCount = 0
 				else
 					self:UpdateSequence() -- Updates the sequence to be idle animation
 					self:StartActivity(self.CalcIdeal) -- Starts the newly updated sequence
