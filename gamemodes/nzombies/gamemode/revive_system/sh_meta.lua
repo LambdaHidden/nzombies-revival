@@ -12,9 +12,11 @@ if SERVER then
 		self:SetTargetPriority(TARGET_PRIORITY_NONE)
 		self:SetHealth(100)
 		
+		--[[
 		if self:GetWeapon("nz_revive_morphine") then
 			self:StripWeapon("nz_revive_morphine")
 		end
+		]]
 
 		if self:HasPerk("whoswho") then
 			self.HasWhosWho = true

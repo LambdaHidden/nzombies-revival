@@ -74,6 +74,21 @@ function nzRevive.HandleRevive(ply, ent)
 				end
 			end
 		end
+		
+	else
+	
+		-- Stop ongoing revive when player goes down
+		if IsValid(ply.Reviving) and (ply.Reviving:IsPlayer() or ply.Reviving:GetClass() == "whoswho_downed_clone") then
+			local id = ply.Reviving:EntIndex()
+			if nzRevive.Players[id] then
+				if nzRevive.Players[id].ReviveTime then
+					--ply:SetMoveType(MOVETYPE_WALK)
+					ply.Reviving:StopRevive()
+					ply.Reviving = nil
+					--nz.nzRevive.Functions.SendSync()
+				end
+			end
+		end
 
 	end
 end
