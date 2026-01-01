@@ -160,17 +160,15 @@ if SERVER then
 	
 	local oldsetwep = playerMeta.SetActiveWeapon
 	function playerMeta:SetActiveWeapon(wep)
-		if not IsValid(wep) then
-			return
-		end
-		
 		local oldwep = self:GetActiveWeapon()
 		if IsValid(oldwep) and !oldwep:IsSpecial() then
 			self.NZPrevWep = oldwep
 		end
 		
 		oldsetwep(self, NULL)
-		self:SelectWeapon(wep)
+		if IsValid(wep) then
+			self:SelectWeapon(wep)
+		end
 	end
 	
 else
