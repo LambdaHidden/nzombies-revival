@@ -165,8 +165,10 @@ if SERVER then
 			self.NZPrevWep = oldwep
 		end
 		
-		oldsetwep(self, NULL)
-		if IsValid(wep) then
+		wepEnt = self:GetWeapon(wep) or nil
+		
+		oldsetwep(self, wepEnt)
+		if IsValid(wepEnt) then
 			self:SelectWeapon(wep)
 		end
 	end
