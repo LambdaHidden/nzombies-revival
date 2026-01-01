@@ -165,7 +165,11 @@ if SERVER then
 			self.NZPrevWep = oldwep
 		end
 		
-		wepEnt = (wep and self:GetWeapon(wep)) or nil
+		if isstring(wep) then
+			wepEnt = self:GetWeapon(wep) or nil
+		else
+			wepEnt = wep
+		end
 		
 		oldsetwep(self, wepEnt)
 	end
