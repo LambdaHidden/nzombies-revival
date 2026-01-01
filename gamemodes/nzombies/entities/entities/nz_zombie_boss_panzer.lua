@@ -209,7 +209,9 @@ function ENT:OnSpawn()
 				util.Effect("Explosion", effectData)
 			end
 		end)
-		self:PlaySequenceAndWait(seq)
+		if IsValid(self) then
+			self:PlaySequenceAndWait(seq)
+		end
 	end
 end
 

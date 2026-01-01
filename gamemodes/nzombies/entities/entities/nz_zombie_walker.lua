@@ -245,8 +245,10 @@ function ENT:OnSpawn()
 			if IsValid(self) and self:Health() <= 0 then
 				self:BecomeRagdoll(DamageInfo())
 			end
-		end)
-		self:PlaySequenceAndWait(seq)
+		end) 
+		if IsValid(self) then
+			self:PlaySequenceAndWait(seq)
+		end
 	end
 end
 
