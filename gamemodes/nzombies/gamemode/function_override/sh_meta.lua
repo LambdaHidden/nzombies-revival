@@ -168,9 +168,6 @@ if SERVER then
 		wepEnt = (wep and self:GetWeapon(wep)) or nil
 		
 		oldsetwep(self, wepEnt)
-		if IsValid(wepEnt) then
-			self:SelectWeapon(wep)
-		end
 	end
 	
 else

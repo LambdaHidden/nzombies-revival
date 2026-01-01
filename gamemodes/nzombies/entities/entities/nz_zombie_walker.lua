@@ -246,7 +246,7 @@ function ENT:OnSpawn()
 				self:BecomeRagdoll(DamageInfo())
 			end
 		end) 
-		if IsValid(self) then
+		if seq then
 			self:PlaySequenceAndWait(seq)
 		end
 	end
