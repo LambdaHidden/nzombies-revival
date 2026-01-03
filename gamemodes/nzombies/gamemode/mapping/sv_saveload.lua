@@ -130,14 +130,14 @@ function nzMapping:LoadConfig( name, loader )
 	local official = false
 
 	if string.GetExtensionFromFilename(name) == "lua" then
-		
-		if file.Exists("nz_officialconfigs/"..name, "GAME") then
-			location, filepath = "GAME", "nz_officialconfigs/"..name
+		--[[
+		if file.Exists("gamemodes/nzombies/officialconfigs/"..name, "GAME") then
+			location, filepath = "GAME", "gamemodes/nzombies/officialconfigs/"..name
 			official = true
 		else
 			location = "LUA"
 		end
-		
+		]]
 		
 		location = "LUA"
 	end
@@ -407,7 +407,7 @@ function nzMapping:GetConfigs()
 	local tbl = {}
 	tbl.configs = file.Find( "nz/nz_*", "DATA" )
 	tbl.workshopconfigs = file.Find( "nz/nz_*", "LUA" )
-	tbl.officialconfigs = file.Find("nz_officialconfigs/*", "GAME")
+	--tbl.officialconfigs = file.Find("gamemodes/nzombies/officialconfigs/*", "GAME")
 	
 	return tbl
 end

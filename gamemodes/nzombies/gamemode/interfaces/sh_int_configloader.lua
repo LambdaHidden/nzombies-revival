@@ -28,11 +28,11 @@ if SERVER then
 		for k,v in pairs(tbl.workshopconfigs) do
 			votes[v] = 0
 		end
-		
+		--[[
 		for k,v in pairs(tbl.officialconfigs) do
 			votes[v] = 0
 		end
-		
+		]]
 		
 		net.Start("nzStartVote")
 			net.WriteUInt(time, 6)
@@ -200,7 +200,7 @@ if CLIENT then
 		local selectedconfig
 		local hoveredpanel
 		
-		
+		--[[
 		if data.officialconfigs then
 			for k,v in pairs(data.officialconfigs) do
 				local name = string.Explode(";", string.StripExtension(v))
@@ -216,7 +216,7 @@ if CLIENT then
 				end
 			end
 		end
-		
+		]]
 		if data.configs then
 			for k,v in pairs(data.configs) do
 				local name = string.Explode(";", string.StripExtension(v))
@@ -317,13 +317,13 @@ if CLIENT then
 					OldConfigs:AddLine(v)
 				end
 			end
-			
+			--[[
 			if data.officialconfigs then
 				for k,v in pairs(data.officialconfigs) do
 					OldConfigs:AddLine(v)
 				end
 			end
-			
+			]]
 			OldConfigs.OnRowSelected = function(self, index, row)
 				selectedconfig = row:GetValue(1)
 				SubmitButton:SetText( "                                Load config\nWarning: May not work properly without changing map" )
@@ -762,11 +762,11 @@ if CLIENT then
 		for k,v in pairs(data.workshopconfigs) do
 			nzInterfaces.ConfigVotes[v] = 0
 		end
-		
+		--[[
 		for k,v in pairs(data.officialconfigs) do
 			nzInterfaces.ConfigVotes[v] = 0
 		end
-		
+		]]
 		maxvote = 0
 		nzInterfaces.ConfigLoader(data, true, time)
 	end)
