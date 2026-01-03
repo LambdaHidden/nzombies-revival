@@ -3,7 +3,7 @@ nZombies Revival
 
 A revival of the original nZombies gamemode
 
-Get the addon here:
+Get the gamemode here:
 https://steamcommunity.com/sharedfiles/filedetails/?id=3626312419
 
 Get the content pack with all models and materials here:
