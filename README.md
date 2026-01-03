@@ -1,10 +1,10 @@
-nZombies
+nZombies Revival
 ========
 
-A GM13 Nazi Zombies style (WIP) gamemode
+A revival of the original nZombies gamemode
 
-Download folder and place it in garrysmod/garrysmod/addons
-Make sure the structure has a path to addon.json like this: garrysmod/garrysmod/addons/nzombies/addon.json
+Get the addon here:
+https://steamcommunity.com/sharedfiles/filedetails/?id=3626312419
 
 Get the content pack with all models and materials here:
 http://steamcommunity.com/sharedfiles/filedetails/?id=675138912
