@@ -1,7 +1,8 @@
 nZombies Revival
 ========
 
-A revival of the original nZombies gamemode
+A revival of the original nZombies gamemode.
+This is for those "classic nZombies enthusiasts" that want to relive the old nZombies experience.
 
 Get the gamemode here:
 https://steamcommunity.com/sharedfiles/filedetails/?id=3626312419
