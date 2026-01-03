@@ -9,8 +9,8 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=3626312419
 Get the content pack with all models and materials here:
 http://steamcommunity.com/sharedfiles/filedetails/?id=675138912
 
-Get the collection of weapon packs used by the official configs here:
-http://steamcommunity.com/sharedfiles/filedetails/?id=673266588
+A collection with content and weapon packs for the gamemode:
+https://steamcommunity.com/sharedfiles/filedetails/?id=3626484548
 
 If you have bugs, suggestions, or general improvements, open up an issue with the issue button at the top. If you want to help, feel free to create pull requests with your changes. If you have questions, add me on steam :)
 
