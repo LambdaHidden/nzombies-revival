@@ -91,7 +91,7 @@ function SWEP:PrimaryAttack()
 			pPlayer:SetAnimation( PLAYER_ATTACK1 )
 			self.nzHolsterTime = CurTime() + 0.5
 			timer.Simple(0.1, function() self:EmitSound("nz/knife/knife_slash.wav") end)
-			pPlayer:ViewPunch( Angle( math.Rand(-3, -2.5), math.Rand(-7, -4.5), 0 ) )
+			--pPlayer:ViewPunch( Angle( math.Rand(-3, -2.5), math.Rand(-7, -4.5), 0 ) )
 		end
 
 		self.Weapon:SetNextPrimaryFire( CurTime() + self:GetFireRate() );
@@ -107,7 +107,7 @@ function SWEP:PrimaryAttack()
 
 	self.Weapon:SendWeaponAnim( ACT_VM_PRIMARYATTACK )
 	pPlayer:SetAnimation( PLAYER_ATTACK1 );
-	pPlayer:ViewPunch( Angle( math.Rand(-3, -2.5), math.Rand(-7, -4.5), 0 ) )
+	--pPlayer:ViewPunch( Angle( math.Rand(-3, -2.5), math.Rand(-7, -4.5), 0 ) )
 
 	self.Weapon:SetNextPrimaryFire( CurTime() + self:GetFireRate() );
 	self.Weapon:SetNextSecondaryFire( CurTime() + self.Weapon:SequenceDuration() );
