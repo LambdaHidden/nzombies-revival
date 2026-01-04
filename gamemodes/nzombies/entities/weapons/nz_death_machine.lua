@@ -56,24 +56,25 @@ end
 
 function SWEP:Deploy()
 	self:SendWeaponAnim(ACT_VM_DRAW)
-	self.WepOwner = self.Owner
+	self.WepOwner = self:GetOwner()
 end
 
 function SWEP:Equip( owner )
 	owner:SetActiveWeapon("nz_death_machine")
+	self.WepOwner = owner
 end
 
 local shootsound = Sound("nz/deathmachine/loop_l_.wav")
 function SWEP:PrimaryAttack()
 	
-	self:SetNextPrimaryFire(CurTime() + 0.05)
+	self:SetNextPrimaryFire(CurTime() + 0.03)
 	self:EmitSound( shootsound )
 	
 	local shootpos = self.Owner:GetShootPos()
 	local shootang = self.Owner:GetAimVector()
 	
 	local bullet = {}
-	bullet.Damage = 9000
+	bullet.Damage = 536870912
 	bullet.Force = 10
 	bullet.Tracer = 1
 	bullet.TracerName = "AirboatGunHeavyTracer"
@@ -99,9 +100,9 @@ function SWEP:PostDrawViewModel()
 end
 
 function SWEP:NZSpecialHolster(wep)
-	if IsValid(self.Owner) then
-		self.Owner:RemovePowerUp("deathmachine")
-	end
+	--if IsValid(self.Owner) then
+	--	self.Owner:RemovePowerUp("deathmachine")
+	--end
 	return true
 end
 

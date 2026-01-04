@@ -21,10 +21,10 @@ ENT.DeathDropHeight = 700
 ENT.StepHeight = 22 --Default is 18 but it makes things easier
 ENT.JumpHeight = 70
 ENT.AttackRange = 65
-ENT.RunSpeed = 200
+ENT.RunSpeed = 160
 ENT.WalkSpeed = 100
 ENT.Acceleration = 400
-ENT.DamageLow = 35
+ENT.DamageLow = 40
 ENT.DamageHigh = 45
 
 -- important for ent:IsZombie()
@@ -137,7 +137,7 @@ function ENT:Initialize()
 	self:SetAttacking( false )
 	self:SetLastAttack( CurTime() )
 	self:SetAttackRange( self.AttackRange )
-	self:SetTargetCheckRange(0) -- 0 for no distance restriction (infinite)
+	self:SetTargetCheckRange(3000) -- 0 for no distance restriction (infinite)
 
 	--target ignore
 	self:ResetIgnores()
@@ -149,6 +149,7 @@ function ENT:Initialize()
 
 	self:SetCollisionBounds(Vector(-16,-16, 0), Vector(16, 16, 70))
 	
+	self:SetSolidMask(MASK_NPCSOLID)
 	self:SetCollisionGroup(COLLISION_GROUP_NPC)
 
 	self:SetActStage(0)
@@ -177,7 +178,7 @@ function ENT:Initialize()
 	
 	self.DeadWalkingCount = 0
 	self.DeadWalkingTime = CurTime()
-	
+
 end
 
 --init for class related attributes hooks etc...
@@ -223,7 +224,7 @@ function ENT:Think()
 
 		-- We don't want to say we're stuck if it's because we're attacking or timed out
 		if !self:GetAttacking() and !self:GetTimedOut() and self:GetLastPostionSave() + 4 < CurTime() then
-			if self:GetPos():Distance( self:GetStuckAt() ) < 10 then
+			if self:GetPos():DistToSqr( self:GetStuckAt() ) < 100 then
 				self:SetStuckCounter( self:GetStuckCounter() + 1)
 			else
 				self:SetStuckCounter( 0 )
@@ -264,6 +265,8 @@ function ENT:Think()
 				end
 
 				if self:GetStuckCounter() > 5 then
+					--Worst case:
+					--respawn the zombie after 32 seconds with no postion change
 					if self:IsInSight() then
 						local effectData = EffectData()
 						effectData:SetStart( self:GetPos() + Vector(0,0,32) )
@@ -271,9 +274,6 @@ function ENT:Think()
 						effectData:SetMagnitude(1)
 						util.Effect("zombie_spawn_dust", effectData)
 					end
-				
-					--Worst case:
-					--respawn the zombie after 32 seconds with no postion change
 					self:RespawnZombie()
 					self:SetStuckCounter( 0 )
 				end
@@ -294,7 +294,6 @@ function ENT:Think()
 				effectData:SetMagnitude(1)
 				util.Effect("zombie_spawn_dust", effectData)
 			end
-		
 			self:RespawnZombie()
 		end
 
@@ -343,6 +342,23 @@ function ENT:SoundThink()
 	end
 end
 
+function ENT:FindTarget()
+	-- Search around us for entities
+	-- This can be done any way you want eg. ents.FindInCone() to replicate eyesight
+	local _ents = ents.FindInSphere( self:GetPos(), 1000 )
+	-- Here we loop through every entity the above search finds and see if it's the one we want
+	for k, v in pairs( _ents ) do
+		if ( v:IsPlayer() ) then
+			-- We found one so lets set it as our enemy and return true
+			self:SetTarget( v )
+			return true
+		end
+	end
+	-- We found nothing so we will set our enemy as nil ( nothing ) and return false
+	self:SetTarget( nil )
+	return false
+end
+
 function ENT:RunBehaviour()
 
 	self:SpawnZombie()
@@ -352,7 +368,7 @@ function ENT:RunBehaviour()
 			self:SetTimedOut(false)
 			if self:HasTarget() then
 				local pathResult = self:ChaseTarget( {
-					maxage = 1,
+					maxage = 0.1,
 					draw = false,
 					tolerance = self:GetSpecialAnimation() and 0 or ((self:GetAttackRange() -30) > 0 ) and self:GetAttackRange() - 20
 				} )
@@ -387,8 +403,8 @@ function ENT:RunBehaviour()
 						self:RespawnZombie()
 						self.DeadWalkingCount = 0
 					else
+						self:FindTarget()
 						self:TimeOut(2)
-						-- path failed what should we do :/?
 					end
 				end
 			else
@@ -697,7 +713,7 @@ function ENT:OnKilled(dmgInfo)
 
 		-- it will not always trigger since the offset can be larger than 12
 		-- but I think it's fine not to decapitate every headshotted zombie
-		if headPos and dmgPos and headPos:Distance(dmgPos) < 12 then
+		if headPos and dmgPos and headPos:DistToSqr(dmgPos) < 144 then
 			self:SetDecapitated(true)
 		end
 	end
@@ -779,7 +795,9 @@ function ENT:ChaseTarget( options )
 
 	if ( !IsValid(path) ) then return "failed" end
 	while ( path:IsValid() and self:HasTarget() and !self:TargetInAttackRange() ) do
-
+		if ( path:GetAge() > 0.2 ) then					-- Since we are following the player we have to constantly remake the path
+			path:Compute( self, self:GetTarget():GetPos() )-- Compute the path towards the enemy's position again
+			end
 		path:Update( self )
 
 		--Timeout the pathing so it will rerun the entire behaviour (break barricades etc)
@@ -798,7 +816,7 @@ function ENT:ChaseTarget( options )
 		--local scanDist = (self.loco:GetVelocity():Length()^2)/(2*900) + 15
 		local scanDist
 		--this will probaly need asjustments to fit the zombies speed
-		if self:GetVelocity():Length2D() > 150 then scanDist = 30 else scanDist = 20 end
+		if self:GetVelocity():Length2DSqr() > 22500 then scanDist = 30 else scanDist = 20 end
 		--debug section
 		if GetConVar( "nz_zombie_debug" ):GetBool() then
 			debugoverlay.Line( self:GetPos(),  path:GetClosestPosition(self:EyePos() + self.loco:GetGroundMotionVector() * scanDist), 0.05, Color(0,0,255,0) )
@@ -846,7 +864,7 @@ function ENT:ChaseTarget( options )
 			return "stuck"
 		end
 
-		if self.loco:GetVelocity():Length() < 10 then
+		if self.loco:GetVelocity():LengthSqr() < 100 then
 			self:ApplyRandomPush()
 		end
 
@@ -933,7 +951,7 @@ function ENT:ChaseTargetPath( options )
 
 	-- a little more complicated that i thought but it should do the trick
 	if lastSeg then
-		if self:GetTargetNavArea() and lastSeg.area:GetID() != self:GetTargetNavArea():GetID() then
+		if IsValid(self:GetTargetNavArea()) and lastSeg.area:GetID() != self:GetTargetNavArea():GetID() then
 			if !nzNav.Locks[self:GetTargetNavArea():GetID()] or nzNav.Locks[self:GetTargetNavArea():GetID()].locked then
 				self:IgnoreTarget(self:GetTarget())
 				-- trigger a retarget
@@ -1134,9 +1152,9 @@ function ENT:PlayAttackAndWait( name, speed )
 end
 
 --we do our own jump since the loco one is a bit weird.
+/*
 function ENT:Jump()
-	local navArea = (navmesh and navmesh.GetNavArea(self:GetPos(), 50)) or nil
-	if CurTime() < self:GetLastLand() + 0.5 or (navArea and navArea:HasAttributes( NAV_MESH_NO_JUMP )) then return end
+	if CurTime() < self:GetLastLand() + 0.5 or navmesh.GetNavArea(self:GetPos(), 50):HasAttributes( NAV_MESH_NO_JUMP ) then return end
 	if !self:IsOnGround() then return end
 	self.loco:SetDesiredSpeed( 450 )
 	self.loco:SetAcceleration( 5000 )
@@ -1146,7 +1164,22 @@ function ENT:Jump()
 	--Boost them
 	self:TimedEvent( 0.5, function() self.loco:SetVelocity( self:GetForward() * 5 ) end)
 end
+*/
+function ENT:Jump()
+    if (self:GetStop()) then return end
 
+    local nav = navmesh.GetNavArea(self:GetPos(), 100)
+    --if (!IsValid(nav) or IsValid(nav) and nav:HasAttributes(NAV_MESH_NO_JUMP)) then return end
+    if CurTime() < self:GetLastLand() + 0.5 then return end
+    if !self:IsOnGround() then return end
+    self.loco:SetDesiredSpeed( 450 )
+    self.loco:SetAcceleration( 5000 )
+    self:SetJumping( true )
+    --self:SetSolidMask( MASK_NPCSOLID_BRUSHONLY )
+    self.loco:Jump()
+    --Boost them
+    self:TimedEvent( 0.5, function() self.loco:SetVelocity( self:GetForward() * 5 ) end)
+end
 function ENT:Flames( state )
 	if state then
 		self.FlamesEnt = ents.Create("env_fire")

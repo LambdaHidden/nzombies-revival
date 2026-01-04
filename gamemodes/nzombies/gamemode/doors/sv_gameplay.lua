@@ -47,7 +47,7 @@ function nzDoors:OpenLinkedDoors( link, ply )
 	self.OpenedLinks[link] = true
 end
 
-function nzDoors:CloseLinkedDoors( link, ply )
+function nzDoors:CloseLinkedDoors( link )
 	-- Go through all the doors
 	for k,v in pairs(self.MapDoors) do
 		if v.flags then
@@ -100,7 +100,7 @@ function nzDoors:LockAllDoors()
 			end
 		-- Allow locking buttons
 		elseif v:IsButton() and self.MapDoors[v:DoorIndex()] then
-			v:ButtonLock()
+			v:LockButton()
 			v:SetUseType( SIMPLE_USE )
 		end
 	end

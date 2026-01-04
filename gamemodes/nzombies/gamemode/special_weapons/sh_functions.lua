@@ -348,7 +348,8 @@ if CLIENT then
 			if !ammo or ply:GetAmmoCount(ammo) >= 1 then
 				--local wep = ply:GetSpecialWeaponFromCategory( id )
 				if IsValid(wep) then
-					ply:SelectWeapon(wep:GetClass())
+					--ply:SelectWeapon(wep:GetClass())
+					cmd:SelectWeapon(wep)
 				end
 			end
 		end
@@ -457,16 +458,14 @@ if SERVER then
 		if wep:IsSpecial() then
 			-- 0 second timer for the next tick where wep's owner is valid
 			timer.Simple(0, function()
-				if IsValid(wep) then
-					local ply = wep:GetOwner()
-					if IsValid(ply) then
-						local oldwep = ply:GetSpecialWeaponFromCategory( wep:GetSpecialCategory() )
-						--print(wep, oldwep)
-						if IsValid(oldwep) then
-							ply:StripWeapon(oldwep:GetClass())
-						end
-						ply:AddSpecialWeapon(wep)
+				local ply = wep:GetOwner()
+				if IsValid(ply) then
+					local oldwep = ply:GetSpecialWeaponFromCategory( wep:GetSpecialCategory() )
+					--print(wep, oldwep)
+					if IsValid(oldwep) then
+						ply:StripWeapon(oldwep:GetClass())
 					end
+					ply:AddSpecialWeapon(wep)
 				end
 			end)
 		end

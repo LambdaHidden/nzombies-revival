@@ -59,6 +59,7 @@ function plyMeta:DropIn()
 		self:SetPlaying( true )
 		self:SetTeam( TEAM_PLAYERS )
 		self:RevivePlayer()
+		self:SetPerkLimit(GetConVar("nz_difficulty_perks_max"):GetInt())
 		hook.Call( "OnPlayerDropIn", nzRound, self )
 		if nzRound:GetNumber() == 1 and nzRound:InState(ROUND_PREP) then
 			PrintMessage( HUD_PRINTTALK, self:Nick() .. " is dropping in!" )
@@ -89,6 +90,7 @@ function plyMeta:ReSpawn()
 	player_manager.SetPlayerClass( self, "player_ingame" )
 	if !self:Alive() then
 		self:Spawn()
+		self:SetPerkLimit(GetConVar("nz_difficulty_perks_max"):GetInt())
 		self:SetTeam( TEAM_PLAYERS )
 	end
 
@@ -99,6 +101,7 @@ function plyMeta:GiveCreativeMode()
 	player_manager.SetPlayerClass( self, "player_create" )
 	if !self:Alive() then
 		self:Spawn()
+		self:SetPerkLimit(GetConVar("nz_difficulty_perks_max"):GetInt())
 	end
 
 end

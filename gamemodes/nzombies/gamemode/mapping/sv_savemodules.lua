@@ -284,16 +284,18 @@ nzMapping:AddSaveModule("DoorSetup", {
 		local door_setup = {}
 		for k,v in pairs(nzDoors.MapDoors) do
 			local flags = ""
-			for k2, v2 in pairs(v.flags) do
-				flags = flags .. k2 .. "=" .. v2 .. ","
-			end
-			flags = string.Trim(flags, ",")
-			door = nzDoors:DoorIndexToEnt(k)
-			if door:IsDoor() then
-				door_setup[k] = {
-				flags = flags,
-				}
-				--print(door.Data)
+			if v.flags then
+				for k2, v2 in pairs(v.flags) do
+					flags = flags .. k2 .. "=" .. v2 .. ","
+				end
+				flags = string.Trim(flags, ",")
+				door = nzDoors:DoorIndexToEnt(k)
+				if door:IsDoor() then
+					door_setup[k] = {
+					flags = flags,
+					}
+					--print(door.Data)
+				end
 			end
 		end
 		return door_setup

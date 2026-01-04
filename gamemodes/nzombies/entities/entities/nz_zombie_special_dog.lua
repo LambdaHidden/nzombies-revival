@@ -127,7 +127,8 @@ function ENT:OnSpawn()
 	util.Effect("lightning_prespawn", effectData)
 	self:SetNoDraw(true)
 	self:SetInvulnerable(true)
-
+	self:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
+	
 	timer.Simple(1.4, function()
 		if IsValid(self) then
 			effectData = EffectData()
@@ -141,12 +142,11 @@ function ENT:OnSpawn()
 			util.Effect("lightning_strike", effectData)
 
 			self:SetNoDraw(false)
-			self:SetCollisionGroup(COLLISION_GROUP_NONE)
+			self:SetCollisionGroup(COLLISION_GROUP_INTERACTIVE_DEBRIS)
 			self:SetStop(false)
 
 			self:SetTarget(self:GetPriorityTarget())
 			self:SetInvulnerable(nil)
-			
 			if self:Health() <= 0 then
 				self:Remove()
 			end
@@ -228,7 +228,7 @@ function ENT:GetPriorityTarget()
 	-- Well if he exists and he is targetable, just target this guy!
 	if IsValid(self:GetTarget()) and self:GetTarget():GetTargetPriority() > 0 then
 		local dist = self:GetRangeSquaredTo( self:GetTarget():GetPos() )
-		if dist < 1000 then
+		if dist <= 999999 then
 			if !self.sprinting then
 				self:EmitSound( self.SprintSounds[ math.random( #self.SprintSounds ) ], 100 )
 				self.sprinting = true
@@ -272,7 +272,7 @@ function ENT:GetPriorityTarget()
 
 	if self:IsValidTarget(bestTarget) then -- If we found a valid target
 		local targetDist = self:GetRangeSquaredTo( bestTarget:GetPos() )
-		if targetDist < 1000 then -- Under this distance, we will break into sprint
+		if targetDist <= 999999 then -- Under this distance, we will break into sprint
 			self:EmitSound( self.SprintSounds[ math.random( #self.SprintSounds ) ], 100 )
 			self.sprinting = true -- Once sprinting, you won't stop
 			self:SetRunSpeed(250)

@@ -9,6 +9,9 @@ end
 function nzDoors:OnDoorUnlocked( door, link, rebuyable, ply )
 	self:SendDoorOpened( door, rebuyable )
 end
+function nzDoors:OnDoorLocked( door, link, rebuyable )
+	self:SendDoorClosed( door, rebuyable )
+end
 
 function nzDoors:OnMapDoorLinkCreated( door, flags, id )
 	self:SendMapDoorCreation(door, flags, id)

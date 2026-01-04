@@ -17,7 +17,7 @@ end
 function ENT:Initialize()
 
 	//self:SetPowerUp("dp")
-	self:SetModelScale(nzPowerUps:Get(self:GetPowerUp()).scale, 0)
+	--self:SetModelScale(nzPowerUps:Get(self:GetPowerUp()).scale, 0)
 	
 	--self:PhysicsInit(SOLID_VPHYSICS)
 	self:PhysicsInitSphere(60, "default_silent")
@@ -30,7 +30,6 @@ function ENT:Initialize()
 		self.NextParticle = CurTime()
 	end
 	self:UseTriggerBounds(true, 0)
-	self:SetMaterial("models/shiny.vtf")
 	self:SetColor( Color(255,200,0) )
 	--self:SetTrigger(true)
 	

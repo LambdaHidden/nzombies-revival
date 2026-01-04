@@ -56,7 +56,7 @@ function EasterEggData.ParseSong(play)
 					EasterEggData.PreloadSong(stream.."?client_id=d8e0407577f7fc8475978904ef89b1f7")
 				end
 			else
-				print("This Soundcloud song does not have allow streaming.")
+				print("This Soundcloud song does not allow streaming.")
 			end
 		return end
 	end, 

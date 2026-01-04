@@ -2,6 +2,8 @@ local playerMeta = FindMetaTable("Player")
 if SERVER then
 
 	function playerMeta:DownPlayer()
+		if (self:IsSpectating()) then return end -- Spectators cannot go down! -- Added by: Ethorbit
+
 		local id = self:EntIndex()
 		--self:AnimRestartGesture(GESTURE_SLOT_CUSTOM, ACT_HL2MP_SIT_PISTOL)
 
@@ -11,12 +13,6 @@ if SERVER then
 		-- downed players are not targeted
 		self:SetTargetPriority(TARGET_PRIORITY_NONE)
 		self:SetHealth(100)
-		
-		--[[
-		if self:GetWeapon("nz_revive_morphine") then
-			self:StripWeapon("nz_revive_morphine")
-		end
-		]]
 
 		if self:HasPerk("whoswho") then
 			self.HasWhosWho = true
@@ -45,7 +41,13 @@ if SERVER then
 		end
 
 		self.OldPerks = self:GetPerks()
-
+		self.OldWeps = {}
+		
+		for i=1, #self:GetWeapons() do
+			local v = self:GetWeapons()[i]
+			table.insert(self.OldWeps, {class = v:GetClass(), ammo1 = self:GetAmmoCount( v:GetPrimaryAmmoType() ), ammo2 = self:GetAmmoCount( v:GetSecondaryAmmoType() ), modifiers = v.NZModifiers or {}})
+		end
+		
 		self:RemovePerks()
 
 		self.DownPoints = math.Round(self:GetPoints()*0.05, -1)
@@ -84,7 +86,21 @@ if SERVER then
 			if self.DownPoints then
 				revivor:GivePoints(self.DownPoints)
 			end
-			revivor:StripWeapon("nz_revive_morphine") -- Remove the viewmodel again
+			if IsValid(revivor.NZPrevWep) then
+				revivor:SelectWeapon(revivor.NZPrevWep:GetClass())
+			else
+				for k,v in pairs( revivor:GetWeapons() ) do
+					if v:GetNWInt( "SwitchSlot" ) == 1 then
+						revivor:SelectWeapon( v:GetClass() )
+						break
+					end
+				end
+			end
+			timer.Simple(0.5, function()
+				if revivor:GetWeapon("nz_revive_morphine") then
+					revivor:StripWeapon("nz_revive_morphine") -- Remove the viewmodel again
+				end
+			end)
 		end
 		self.DownPoints = nil
 		self.HasWhosWho = nil
@@ -103,9 +119,23 @@ if SERVER then
 		nzRevive.Players[id].RevivePlayer = revivor
 		revivor.Reviving = self
 
+		-- Added by Ethorbit (Don't allow reviving someone if they are already being revived!)
+		-- If we do this it can cause bugs, confusion and also isn't like COD at all..
+		local alreadyBeingRevived = false
+		for k,v in pairs(player.GetAll()) do 		
+			if (v != revivor and v.Reviving == self) then
+				alreadyBeingRevived = true
+				break
+			end
+		end
+		if (alreadyBeingRevived) then return end
+
 		print("Started revive", self, revivor)
 
 		if revivor:GetNotDowned() then -- You can revive yourself while downed with Solo Quick Revive
+			local theirwep = revivor:GetActiveWeapon()
+			if !theirwep:IsSpecial() then revivor.NZRevWep = theirwep:GetClass() end
+
 			revivor:Give("nz_revive_morphine") -- Give them the viewmodel
 		end
 
@@ -118,7 +148,12 @@ if SERVER then
 
 		local revivor = nzRevive.Players[id].RevivePlayer
 		if IsValid(revivor) then
-			revivor:StripWeapon("nz_revive_morphine") -- Remove the revivors viewmodel
+			revivor:SelectWeapon(revivor.NZRevWep)
+			timer.Simple(0.5, function()
+				if revivor:GetWeapon("nz_revive_morphine") then
+					revivor:StripWeapon("nz_revive_morphine") -- Remove the revivors viewmodel
+				end
+			end)
 		end
 
 		nzRevive.Players[id].ReviveTime = nil
@@ -135,7 +170,12 @@ if SERVER then
 
 		local revivor = nzRevive.Players[id].RevivePlayer
 		if IsValid(revivor) then -- This shouldn't happen as players can't die if they are currently being revived
-			revivor:StripWeapon("nz_revive_morphine") -- Remove the revivors if someone was reviving viewmodel
+			revivor:SelectWeapon(revivor.NZRevWep)
+			timer.Simple(0.5, function()
+				if revivor:GetWeapon("nz_revive_morphine") then
+					revivor:StripWeapon("nz_revive_morphine") -- Remove the revivors if someone was reviving viewmodel
+				end
+			end)
 		end
 
 		nzRevive.Players[id] = nil

@@ -9,11 +9,9 @@ ENT.Instructions	= ""
 
 AddCSLuaFile()
 
-
-
 function ENT:Initialize()
 
-	self:SetModel( "models/props_lab/huladoll.mdl" )
+	self:SetModel( "models/hoff/props/teddy_bear/teddy_bear.mdl" )
 	self:SetMoveType( MOVETYPE_NONE )
 	self:SetSolid( SOLID_VPHYSICS )
 	self:SetCollisionGroup( COLLISION_GROUP_WEAPON )

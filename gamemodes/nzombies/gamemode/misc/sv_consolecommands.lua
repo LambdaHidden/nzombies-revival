@@ -2,8 +2,8 @@
 
 -- Quick reload for dedicated severs
 concommand.Add("nz_qr", function(ply)
-if !IsValid(ply) or ply:IsSuperAdmin() then
-	RunConsoleCommand("changelevel", game.GetMap())
+	if !IsValid(ply) or ply:IsSuperAdmin() then
+		RunConsoleCommand("changelevel", game.GetMap())
 	end
 end)
 

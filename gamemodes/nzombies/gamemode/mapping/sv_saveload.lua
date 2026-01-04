@@ -129,18 +129,16 @@ function nzMapping:LoadConfig( name, loader )
 	local location = "DATA"
 	local official = false
 
+	--[[
 	if string.GetExtensionFromFilename(name) == "lua" then
-		--[[
 		if file.Exists("gamemodes/nzombies/officialconfigs/"..name, "GAME") then
 			location, filepath = "GAME", "gamemodes/nzombies/officialconfigs/"..name
 			official = true
 		else
 			location = "LUA"
 		end
-		]]
-		
-		location = "LUA"
 	end
+	]]
 
 	if file.Exists( filepath, location )then
 		print("[nZ] MAP CONFIG FOUND!")

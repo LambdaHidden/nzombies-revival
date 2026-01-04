@@ -15,7 +15,7 @@ SWEP.Primary.ClipSize		= -1
 SWEP.Primary.DefaultClip	= -1
 SWEP.Primary.Delay = 1
 SWEP.Primary.Ammo = -1
-SWEP.ViewModelFOV = 75
+SWEP.ViewModelFOV = 64
 SWEP.Secondary.ClipSize		= -1
 SWEP.Secondary.DefaultClip	= -1
 SWEP.Secondary.Ammo			= -1
@@ -76,21 +76,23 @@ end
 
 function SWEP:Equip( owner )
 	
-	timer.Simple(3.2,function()
-		owner:SetUsingSpecialWeapon(false)
-		owner:EquipPreviousWeapon()
-	end)
+	--timer.Simple(3.2,function()
+	--	owner:SetUsingSpecialWeapon(false)
+	--	owner:EquipPreviousWeapon()
+	--end)
 	owner:SetActiveWeapon("nz_perk_bottle")
+	self.nzDeployTime = CurTime()
 	
 end
 
 function SWEP:Deploy()
+	--self:SendWeaponAnim(ACT_VM_DRAW)
 
 	timer.Simple(0.5,function()
 		if IsValid(self) and IsValid(self.Owner) then
 			if self.Owner:Alive() then
 				self:EmitSound("nz/perks/open.wav")
-				self.Owner:ViewPunch( Angle( -1, -1, 0 ) )
+				self.Owner:ViewPunch( Angle( -1, 1, 0 ) )
 			end
 		end
 	end)
@@ -99,7 +101,7 @@ function SWEP:Deploy()
 		if IsValid(self) and IsValid(self.Owner) then
 			if self.Owner:Alive() then
 				self:EmitSound("nz/perks/drink.wav")
-				self.Owner:ViewPunch( Angle( -3, 0, 0 ) )
+				self.Owner:ViewPunch( Angle( -2.5, 0, 0 ) )
 			end
 		end
 	end)

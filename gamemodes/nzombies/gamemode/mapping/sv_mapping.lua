@@ -204,7 +204,12 @@ function nzMapping:BoxSpawn(pos, ang, spawn, ply)
 	box:PhysicsInit( SOLID_VPHYSICS )
 	box:SetCollisionGroup( COLLISION_GROUP_DEBRIS_TRIGGER )
 	box.PossibleSpawn = spawn
-
+	
+	local phys = box:GetPhysicsObject()
+	if IsValid(phys) then
+		phys:EnableMotion(false)
+	end
+	
 	if ply then
 		undo.Create( "Random Box Spawnpoint" )
 			undo.SetPlayer( ply )

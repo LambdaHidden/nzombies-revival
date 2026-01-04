@@ -83,7 +83,7 @@ function ENT:Use(activator, caller)
 	if self:IsOn() then
 		local price = self:GetPrice()
 		-- As long as they have less than the max perks, unless it's pap
-		if #activator:GetPerks() < GetConVar("nz_difficulty_perks_max"):GetInt() or self:GetPerkID() == "pap" then
+		if #activator:GetPerks() < activator:GetPerkLimit() or self:GetPerkID() == "pap" then
 			-- If they have enough money
 			local func = function()
 				local id = self:GetPerkID()

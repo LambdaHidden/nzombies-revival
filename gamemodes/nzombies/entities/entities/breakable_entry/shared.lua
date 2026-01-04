@@ -42,13 +42,17 @@ function ENT:AddPlank(nosound)
 	self:SpawnPlank()
 	self:SetNumPlanks( (self:GetNumPlanks() or 0) + 1 )
 	if !nosound then
-		self:EmitSound("nz/effects/board_slam_0"..math.random(0,5)..".wav")
+		self:EmitSound("nz/effects/board_slam_0"..math.random(0,5)..".wav", 75, 100, 0.75)
 	end
 end
 
 function ENT:RemovePlank()
 
 	local plank = table.Random(self.Planks)
+	
+	if plank == nil then
+		return
+	end
 	
 	if !IsValid(plank) and plank != nil then -- Not valid but not nil (NULL)
 		table.RemoveByValue(self.Planks, plank) -- Remove it from the table
@@ -91,7 +95,7 @@ function ENT:Use( activator, caller )
 		if self:GetHasPlanks() and self:GetNumPlanks() < GetConVar("nz_difficulty_barricade_planks_max"):GetInt() then
 			self:AddPlank()
                   activator:GivePoints(10)
-				  activator:EmitSound("nz/effects/repair_ching.wav")
+				  activator:EmitSound("nz/effects/repair_ching.wav", 75, 100, 0.75)
 			self.NextPlank = CurTime() + 1
 		end
 	end

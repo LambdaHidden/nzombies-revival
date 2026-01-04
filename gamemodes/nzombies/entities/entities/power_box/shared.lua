@@ -23,6 +23,8 @@ function ENT:Initialize()
 		self:SetUseType( ONOFF_USE )
 		self:SetSwitch(false)
 		
+		util.PrecacheSound("nz/machines/power_up.wav")
+		
 		self.Handle = ents.Create("nz_prop_effect_attachment")
 		self.Handle:SetModel("models/nzprops/zombies_power_lever_handle.mdl")
 		self.Handle:SetAngles( self:GetAngles() )

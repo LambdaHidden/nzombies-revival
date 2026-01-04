@@ -73,9 +73,7 @@ function ENT:GetLinkedEnts()
 end
 
 function ENT:OnModelChange(name, old, new)
-	if self.ModelTranslate[new] then
-		self:SetModel(self.ModelTranslate[new].model)
-	end
+	self:SetModel(self.ModelTranslate[new].model)
 end
 
 function ENT:Initialize()

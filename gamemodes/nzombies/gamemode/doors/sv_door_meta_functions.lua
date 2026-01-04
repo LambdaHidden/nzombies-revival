@@ -78,6 +78,8 @@ function meta:LockDoor()
 		self:Fire("Close", "", 0)
 		self:Fire("lock", "", 0)
 		self:Fire("Lock", "", 0)
+		
+		hook.Run("OnDoorLocked", self, data.link, data.rebuyable)
 	elseif self:IsBuyableProp() then
 		self:BlockLock()
 	end

@@ -13,8 +13,8 @@ FRAG_GRENADE_WARN_TIME = 1.5
 GRENADE_COEFFICIENT_OF_RESTITUTION = 0.2;
 
 local sk_plr_dmg_fraggrenade	= 100
-local sk_npc_dmg_fraggrenade	= 200
-local sk_fraggrenade_radius		= 100
+local sk_npc_dmg_fraggrenade	= 500
+local sk_fraggrenade_radius		= 150
 
 GRENADE_MODEL = "models/Weapons/w_grenade.mdl"
 

@@ -6,6 +6,7 @@ if SERVER then
 	util.AddNetworkString( "nzPlayerPlayingState" )
 
 	function nzRound:SendNumber( number, ply )
+
 		net.Start( "nzRoundNumber" )
 			net.WriteInt( number or 0, 16 )
 		return ply and net.Send( ply ) or net.Broadcast()
@@ -13,6 +14,7 @@ if SERVER then
 	end
 
 	function nzRound:SendState( state, ply )
+
 		net.Start( "nzRoundState" )
 			net.WriteUInt( state or ROUND_WAITING, 3 )
 		return ply and net.Send( ply ) or net.Broadcast()
@@ -20,6 +22,7 @@ if SERVER then
 	end
 
 	function nzRound:SendSpecialRound( bool, ply )
+
 		net.Start( "nzRoundSpecial" )
 			net.WriteBool( bool or false )
 		return ply and net.Send( ply ) or net.Broadcast()
@@ -27,16 +30,18 @@ if SERVER then
 	end
 
 	function nzRound:SendReadyState( ply, state, recieverPly )
+
 		net.Start( "nzPlayerReadyState" )
-			net.WriteUInt(ply:EntIndex(), 511)
+			net.WriteEntity( ply )
 			net.WriteBool( state )
 		return recieverPly and net.Send( recieverPly ) or net.Broadcast()
 
 	end
 
 	function nzRound:SendPlayingState( ply, state, recieverPly )
+
 		net.Start( "nzPlayerPlayingState" )
-			net.WriteUInt(ply:EntIndex(), 511)
+			net.WriteEntity( ply )
 			net.WriteBool( state )
 		return recieverPly and net.Send( recieverPly ) or net.Broadcast()
 
@@ -87,19 +92,17 @@ if CLIENT then
 
 
 	local function receivePlayerReadyState()
-		local ply = ents.GetByIndex(net.ReadUInt(511))
-		local state = net.ReadBool()
+		local ply = net.ReadEntity()
 		if IsValid(ply) then
-			ply:SetReady( state )
+			ply:SetReady( net.ReadBool() )
 		end
 	end
 	net.Receive( "nzPlayerReadyState", receivePlayerReadyState )
 
 	local function receivePlayerPlayingState()
-		local ply = ents.GetByIndex(net.ReadUInt(511))
-		local state = net.ReadBool()
+		local ply = net.ReadEntity()
 		if IsValid(ply) then
-			ply:SetPlaying( state )
+			ply:SetPlaying( net.ReadBool() )
 		end
 	end
 	net.Receive( "nzPlayerPlayingState", receivePlayerPlayingState )

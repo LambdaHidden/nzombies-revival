@@ -210,7 +210,7 @@ function wepmeta:ApplyNZModifier(modifier, blocknetwork)
 		if !self.NZModifiers then self.NZModifiers = {} end
 		if modifier != "repap" and modifier != "equip" then self.NZModifiers[modifier] = RecursiveDifferenceCheck(oldversion, self:GetTable()) end -- Store all differences so we can restore them!
 	else
-		print("Tried to apply invalid modifier "..modifier.." to weapon "..tostring(self))
+		print("Tried to apply invalid modifier "..tostring(modifier).." to weapon "..tostring(self))
 	end
 end
 
@@ -545,14 +545,14 @@ end, function(wep)
 
 				local att_neue = TFA.Attachments[ wep.Attachments[cat].atts[ id ] or -1 ]
 				if att_neue then
-					att_neue:Attach( wep )
+					tt_neue:Attach( wep )
 				end
 			end
 			wep:ClearStatCache()
-			if id > 0 then
+			if id ~= nil then
 				wep.Attachments[cat].sel = id
 			else
-				wep.Attachments[cat].sel = nil
+				qwp.Attachments[cat].sel = nil
 			end
 			wep:BuildAttachmentCache()
 			if nw then
@@ -614,7 +614,7 @@ if CLIENT then
 			elseif wep.PaPMats2 then -- Will be generated if not defined in the weapon file
 				timer.Simple(0.01, function()
 					for k,v in pairs(wep.PaPMats2) do
-						view:SetSubMaterial(k, "models/XQM/LightLinesRed_tool.vtf")
+						view:SetSubMaterial(k, "models/props_combine/combine_monitorbay_disp")
 					end
 				end)
 			end

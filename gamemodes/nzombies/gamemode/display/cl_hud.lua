@@ -35,7 +35,7 @@ local function StatesHud()
 	end
 end
 
-local tbl = {Entity(3), Entity(1), Entity(3), Entity(4), Entity(5),}
+local tbl = {Entity(3), Entity(1), Entity(3), Entity(4), Entity(5)}
 
 local function ScoreHud()
 	if GetConVar("cl_drawhud"):GetBool() then
@@ -81,15 +81,15 @@ local function ScoreHud()
 					--for i = 0, 8 do
 						--surface.SetMaterial(bloodDecals[((index + i - 1) % #bloodDecals) + 1 ])
 						surface.SetMaterial(blood)
-						surface.DrawTexturedRect(ScrW() - textW - 180, ScrH() - 275 * scale - offset, textW + 150, 45)
+						surface.DrawTexturedRect(10 , ScrH() - 175 * scale - offset, textW + 150, 45)
 					--end
 					--surface.DrawTexturedRect(ScrW() - 325*scale - numname * 10, ScrH() - 285*scale - (30*k), 250 + numname*10, 35)
-					if text then draw.SimpleText(text, font, ScrW() - textW - 60, ScrH() - 255 * scale - offset, color, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER) end
+					if text then draw.SimpleText(text, font, 40, ScrH() - 154 * scale - offset, color, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER) end
 					if LocalPlayer() == v then
 						font = "nz.display.hud.medium"
 					end
-					draw.SimpleText(v:GetPoints(), font, ScrW() - textW - 60 - nameoffset, ScrH() - 255 * scale - offset, color, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
-					v.PointsSpawnPosition = {x = ScrW() - textW - 170, y = ScrH() - 255 * scale - offset}
+					draw.SimpleText(v:GetPoints(), font, textW + 65 - nameoffset, ScrH() - 154 * scale - offset, color, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+					v.PointsSpawnPosition = {x = textW + 140, y = ScrH() - 154 * scale - offset}
 				end
 			end
 		end
@@ -106,6 +106,7 @@ local function GunHud()
 			surface.SetMaterial(bloodline_gun)
 			surface.SetDrawColor(200,200,200)
 			surface.DrawTexturedRect(w - 630*scale, h - 225*scale, 600*scale, 225*scale)
+			
 			if IsValid(wep) then
 				if wep:GetClass() == "nz_multi_tool" then
 					draw.SimpleTextOutlined(nzTools.ToolData[wep.ToolMode].displayname or wep.ToolMode, "nz.display.hud.small", w - 240*scale, h - 125*scale, color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_BOTTOM, 2, color_black)
@@ -157,25 +158,71 @@ local function GunHud()
 	end
 end
 
+local powerupicons = {
+	["dp"] = Material("powerups/powerup_double_points.png", "unlitgeneric smooth"),
+	["insta"] = Material("powerups/powerup_insta_kill.png", "unlitgeneric smooth"),
+	["firesale"] = Material("powerups/powerup_firesale.png", "unlitgeneric smooth"),
+	["papfiresale"] = Material("powerups/powerup_pap_firesale.png", "unlitgeneric smooth"),
+	["death_machine"] = Material("powerups/powerup_death_machine.png", "unlitgeneric smooth"),
+	["zombie_blood"] = Material("powerups/powerup_zombie_blood.png", "unlitgeneric smooth")
+}
+local powerdownicons = {
+	["insta"] = Material("powerups/powerup_insta_kill.png", "unlitgeneric smooth"),
+	["pricegouge"] = Material("powerups/powerup_firesale.png", "unlitgeneric smooth"),
+	["pappricegouge"] = Material("powerups/powerup_pap_firesale.png", "unlitgeneric smooth")
+}
 local function PowerUpsHud()
 	if nzRound:InProgress() or nzRound:InState(ROUND_CREATE) then
+		----------timer-------------
 		local font = "nz.display.hud.main"
-		local w = ScrW() / 2
-		local offset = 40
-		local c = 0
-		for k,v in pairs(nzPowerUps.ActivePowerUps) do
-			if nzPowerUps:IsPowerupActive(k) then
-				local powerupData = nzPowerUps:Get(k)
-				draw.SimpleText(powerupData.name .. " - " .. math.Round(v - CurTime()), font, w, ScrH() * 0.85 + offset * c, Color(255, 255, 255,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-				c = c + 1
-			end
-		end
+		local text_w = 745
+		---------icon--------------
 		if !nzPowerUps.ActivePlayerPowerUps[LocalPlayer()] then nzPowerUps.ActivePlayerPowerUps[LocalPlayer()] = {} end
+		
+		local centerw = ScrW()/2
+		local posy = ScrH() - 98
+		local posy2 = ScrH() - 120
+		local size = 64
+		local scale = ScrW()/1920
+		local gap = 16
+		local iconstodraw = table.Count(nzPowerUps.ActivePowerUps) + table.Count(nzPowerUps.ActivePlayerPowerUps[LocalPlayer()])
+		
+		local iconsdrawn = 0
+		for k,v in pairs(nzPowerUps.ActivePowerUps) do
+			if !powerupicons[k] then continue end
+			surface.SetMaterial(powerupicons[k])
+			surface.SetDrawColor(255,255,255)
+			local posw = centerw - (size+gap)*iconstodraw/2 + (size+gap)*iconsdrawn
+			surface.DrawTexturedRect( posw, posy, size*scale, size*scale )
+			draw.SimpleText(math.Round(v - CurTime()), font, posw + size*scale/2, posy2, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			iconsdrawn = iconsdrawn + 1
+		end
 		for k,v in pairs(nzPowerUps.ActivePlayerPowerUps[LocalPlayer()]) do
-			if nzPowerUps:IsPlayerPowerupActive(LocalPlayer(), k) then
-				local powerupData = nzPowerUps:Get(k)
-				draw.SimpleText(powerupData.name .. " - " .. math.Round(v - CurTime()), font, w, ScrH() * 0.85 + offset * c, Color(255, 255, 255,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-				c = c + 1
+			if !powerupicons[k] then continue end
+			surface.SetMaterial(powerupicons[k])
+			surface.SetDrawColor(255,255,255)
+			local posw = centerw - (size+gap)*iconstodraw/2 + (size+gap)*iconsdrawn
+			surface.DrawTexturedRect( posw, posy, size*scale, size*scale )
+			draw.SimpleText(math.Round(v - CurTime()), font, posw + size*scale/2, posy2, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			iconsdrawn = iconsdrawn + 1
+		end
+		
+		----------powerdowns----------
+		if nzPowerDowns then
+			local posy3 = ScrH() - 200
+			local posy4 = ScrH() - 222
+			local scale = ScrW()/1920
+			local iconstodraw2 = table.Count(nzPowerDowns.ActivePowerDowns)
+			
+			local iconsdrawn2 = 0
+			for k,v in pairs(nzPowerDowns.ActivePowerDowns) do
+				if !powerdownicons[k] then continue end
+				surface.SetMaterial(powerdownicons[k])
+				surface.SetDrawColor(255,127,127)
+				local posw = centerw - (size+gap)*iconstodraw2/2 + (size+gap)*iconsdrawn2
+				surface.DrawTexturedRect( posw, posy3, size*scale, size*scale )
+				draw.SimpleText(math.Round(v - CurTime()), font, posw + size*scale/2, posy4, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+				iconsdrawn = iconsdrawn + 1
 			end
 		end
 	end
@@ -211,7 +258,7 @@ function nzDisplay.DrawLinks( ent, link )
 	if tbl[1] != nil then
 		for k,v in pairs(tbl) do
 			render.SetMaterial( Laser )
-			render.DrawBeam( ent:GetPos(), v:GetPos(), 20, 1, 1, Color( 255, 255, 255, 255 ) )
+			render.DrawBeam( ent:GetPos(), v:GetPos(), 20, 1, 1, color_white )
 		end
 	end
 end
@@ -251,9 +298,9 @@ local function DrawPointsNotification()
 		local fade = math.Clamp((CurTime()-v.time), 0, 1)
 		if !v.ply.PointsSpawnPosition then return end
 		if v.amount >= 0 then
-			draw.SimpleText(v.amount, font, v.ply.PointsSpawnPosition.x - 50*fade, v.ply.PointsSpawnPosition.y + v.diry*fade, Color(255,255,0,255-255*fade), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
+			draw.SimpleText(v.amount, font, v.ply.PointsSpawnPosition.x + 70*fade, v.ply.PointsSpawnPosition.y + v.diry*fade, Color(255,255,0,255-255*fade), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
 		else
-			draw.SimpleText(v.amount, font, v.ply.PointsSpawnPosition.x - 50*fade, v.ply.PointsSpawnPosition.y + v.diry*fade, Color(255,0,0,255-255*fade), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
+			draw.SimpleText(v.amount, font, v.ply.PointsSpawnPosition.x + 70*fade, v.ply.PointsSpawnPosition.y + v.diry*fade, Color(255,0,0,255-255*fade), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
 		end
 		if fade >= 1 then
 			table.remove(PointsNotifications, k)
@@ -261,34 +308,22 @@ local function DrawPointsNotification()
 	end
 end
 
--- Now handled via perks individual icon table entries
---[[local perk_icons = {
-	["jugg"] = Material("perk_icons/jugg.png", "smooth unlitgeneric"),
-	["speed"] = Material("perk_icons/speed.png", "smooth unlitgeneric"),
-	["dtap"] = Material("perk_icons/dtap.png", "smooth unlitgeneric"),
-	["revive"] = Material("perk_icons/revive.png", "smooth unlitgeneric"),
-	["dtap2"] = Material("perk_icons/dtap2.png", "smooth unlitgeneric"),
-	["staminup"] = Material("perk_icons/staminup.png", "smooth unlitgeneric"),
-	["phd"] = Material("perk_icons/phd.png", "smooth unlitgeneric"),
-	["deadshot"] = Material("perk_icons/deadshot.png", "smooth unlitgeneric"),
-	["mulekick"] = Material("perk_icons/mulekick.png", "smooth unlitgeneric"),
-	["cherry"] = Material("perk_icons/cherry.png", "smooth unlitgeneric"),
-	["tombstone"] = Material("perk_icons/tombstone.png", "smooth unlitgeneric"),
-	["whoswho"] = Material("perk_icons/whoswho.png", "smooth unlitgeneric"),
-	["vulture"] = Material("perk_icons/vulture.png", "smooth unlitgeneric"),
-
-	-- Only used to see PaP through walls with Vulture Aid
-	["pap"] = Material("vulture_icons/pap.png", "smooth unlitgeneric"),
-}]]
-
 local function PerksHud()
-	local scale = (ScrW()/1920 + 1)/2
-	local w = -20
-	local size = 50
+	local scale = (ScrW()/1920 + 1)/1.75
+	local w = 175
+	local size = 45
+	local rank = -58
+	local rank_check = 0
+	local rank_mult = 0
 	for k,v in pairs(LocalPlayer():GetPerks()) do
 		surface.SetMaterial(nzPerks:Get(v).icon)
 		surface.SetDrawColor(255,255,255)
-		surface.DrawTexturedRect(w + k*(size*scale + 10), ScrH() - 200, size*scale, size*scale)
+		surface.DrawTexturedRect(w + k*(size*scale + 1), ScrH() - 75 + rank*rank_mult, size*scale, size*scale)
+		rank_check = rank_check + 1
+		if rank_check == 7 then
+			rank_mult = rank_mult + 1
+			w = w - k*(size*scale + 1)
+		end
 	end
 end
 
@@ -298,9 +333,11 @@ local vulture_textures = {
 	["wunderfizz_machine"] = Material("vulture_icons/wunderfizz.png", "smooth unlitgeneric"),
 }
 
+
+
 local function VultureVision()
 	if !LocalPlayer():HasPerk("vulture") then return end
-	local scale = (ScrW()/1920 + 1)/2
+	local scale = (ScrW()/1920 + 1.5)/1.75
 
 	for k,v in pairs(ents.FindInSphere(LocalPlayer():GetPos(), 700)) do
 		local target = v:GetClass()
@@ -333,30 +370,30 @@ local function RoundHud()
 
 	local text = ""
 	local font = "nz.display.hud.rounds"
-	local w = 70
-	local h = ScrH() - 30
+	local w = 35
+	local h = ScrH() - 15
 	local round = round_num
-	local col = Color(200 + round_white*55, round_white, round_white,round_alpha)
+	local col = Color(100 + round_white*55, round_white, round_white,round_alpha)
 	if round == -1 then
 		--text = "∞"
 		surface.SetMaterial(infmat)
 		surface.SetDrawColor(col.r,round_white,round_white,round_alpha)
 		surface.DrawTexturedRect(w - 25, h - 100, 200, 100)
 		return
-	elseif round < 11 then
+	elseif round < 6 then
 		for i = 1, round do
-			if i == 5 or i == 10 then
+			if i == 5 or i == 6 then
 				text = text.." "
 			else
 				text = text.."i"
 			end
 		end
 		if round >= 5 then
-			draw.TextRotatedScaled( "i", w + 100, h - 150, col, font, 60, 1, 1.7 )
+			draw.TextRotatedScaled( "i", w + 111, h - 180, col, font, 60, 1, 1.45 )
 		end
-		if round >= 10 then
-			draw.TextRotatedScaled( "i", w + 220, h - 150, col, font, 60, 1, 1.7 )
-		end
+		--if round >= 10 then
+		--	draw.TextRotatedScaled( "i", w + 220, h - 150, col, font, 60, 1, 1.7 )
+		--end
 	else
 		text = round
 	end
@@ -374,12 +411,12 @@ local function StartChangeRound()
 
 	if lastround >= 1 then
 		if prevroundspecial then
-			surface.PlaySound("nz/round/special_round_end.wav")
+			surface.PlaySound("#nz/round/special_round_end.wav")
 		else
-			surface.PlaySound("nz/round/round_end.mp3")
+			surface.PlaySound("#nz/round/round_end.mp3")
 		end
 	elseif lastround == -2 then
-		surface.PlaySound("nz/round/round_-1_prepare.mp3")
+		surface.PlaySound("#nz/round/round_-1_prepare.mp3")
 	else
 		round_num = 0
 	end
@@ -414,10 +451,10 @@ local function StartChangeRound()
 					if round_num == -1 then
 						--surface.PlaySound("nz/easteregg/motd_round-03.wav")
 					elseif nzRound:IsSpecial() then
-						surface.PlaySound("nz/round/special_round_start.wav")
+						surface.PlaySound("#nz/round/special_round_start.wav")
 						prevroundspecial = true
 					else
-						surface.PlaySound("nz/round/round_start.mp3")
+						surface.PlaySound("#nz/round/round_start.mp3")
 						prevroundspecial = false
 					end
 					haschanged = true
@@ -434,30 +471,79 @@ local function EndChangeRound()
 	roundchangeending = true
 end
 
-local grenade_icon = Material("grenade-256.png", "unlitgeneric smooth")
+local grenade_icon = Material("grenade.png", "unlitgeneric smooth")
+
+local grenadeicons = {
+	["nz_monkey_bomb"] = Material("monkey_bomb.png", "unlitgeneric smooth"),
+	["nz_gersh_device"] = Material("gersh_device.png", "unlitgeneric smooth"),
+	["nz_qed"] = Material("Quantum_Entanglement_Device.png", "unlitgeneric smooth"),
+	["nz_hellsretriever"] = Material("hell_retriever.png", "unlitgeneric smooth"),
+	["nz_hellsredeemer"] = Material("nz_hellsredeemer.png", "unlitgeneric smooth")
+}
+
 local function DrawGrenadeHud()
 	local num = LocalPlayer():GetAmmoCount(GetNZAmmoID("grenade") or -1)
 	local numspecial = LocalPlayer():GetAmmoCount(GetNZAmmoID("specialgrenade") or -1)
 	local scale = (ScrW()/1920 + 1)/2
 
-	--print(num)
+	surface.SetDrawColor(255,255,255)
+	
 	if num > 0 then
 		surface.SetMaterial(grenade_icon)
-		surface.SetDrawColor(255,255,255)
 		for i = num, 1, -1 do
-			--print(i)
-			surface.DrawTexturedRect(ScrW() - 250*scale - i*10*scale, ScrH() - 90*scale, 30*scale, 30*scale)
+			surface.DrawTexturedRect(ScrW() - 275*scale - i*15*scale, ScrH() - 90*scale, 40*scale, 40*scale)
 		end
 	end
+	
 	if numspecial > 0 then
-		surface.SetMaterial(grenade_icon)
-		surface.SetDrawColor(255,100,100)
-		for i = numspecial, 1, -1 do
-			--print(i)
-			surface.DrawTexturedRect(ScrW() - 300*scale - i*10*scale, ScrH() - 90*scale, 30*scale, 30*scale)
+		for k, v in pairs(grenadeicons) do
+			if LocalPlayer():HasWeapon(k) then
+				surface.SetMaterial(v)
+				for i = numspecial, 1, -1 do
+					surface.DrawTexturedRect(ScrW() - 380*scale - i*15*scale, ScrH() - 90*scale, 40*scale, 40*scale)
+				end
+				break
+			end
 		end
 	end
-	--surface.DrawTexturedRect(ScrW()/2, ScrH()/2, 100, 100)
+end
+
+local afsymbol = Material("vgui/afterlife_blue")
+local afsymbolwhite = Material("vgui/afterlife_white")
+local function AfterlifeHud()
+	if !nzAfterlife.Enabled then return end
+	
+	if LocalPlayer():GetNW2Bool("IsInAfterlife") then
+		surface.SetMaterial(afsymbolwhite)
+		surface.SetDrawColor(128,128,128)
+		surface.DrawTexturedRect(ScrW()*0.5 - 64, ScrH() - 128, 128, 64)
+		
+		--(CurTime() - v.DownTime)*(150/GetConVar("nz_downtime"):GetFloat())
+		local clone = LocalPlayer():GetNW2Entity("AfterlifeClone")
+		
+		if !IsValid(clone) then return end
+		if nzRevive.Players[clone:EntIndex()] == nil then return end
+		
+		local downtime = (CurTime() - nzRevive.Players[clone:EntIndex()].DownTime)
+		
+		local remap = math.Remap(downtime, 0, GetConVar("nz_downtime"):GetFloat(), 0, 1)
+		
+		surface.SetMaterial(afsymbol)
+		surface.SetDrawColor(255,255,255)
+		surface.DrawTexturedRectUV( ScrW()*0.5 - 64, ScrH() - 128, 128 - remap*128, 64, 0, 0, 1-remap, 1 )
+		return
+	end
+
+
+
+
+	local font = "nz.display.hud.main"
+	
+	local w = (ScrW()*0.9)
+	surface.SetDrawColor(255,255,255)
+	surface.SetMaterial(afsymbol)
+	surface.DrawTexturedRect(w, ScrH() - 256, 100, 50)
+	draw.SimpleText(tostring(LocalPlayer():GetNW2Int("Afterlives")), font, w+72, ScrH() - 192, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
 end
 
 -- Hooks
@@ -470,6 +556,7 @@ hook.Add("HUDPaint", "perksHUD", PerksHud )
 hook.Add("HUDPaint", "vultureVision", VultureVision )
 hook.Add("HUDPaint", "roundnumHUD", RoundHud )
 hook.Add("HUDPaint", "grenadeHUD", DrawGrenadeHud )
+if nzAfterlife then hook.Add("HUDPaint", "afterlifeHUD", AfterlifeHud ) end
 
 hook.Add("OnRoundPreparation", "BeginRoundHUDChange", StartChangeRound)
 hook.Add("OnRoundStart", "EndRoundHUDChange", EndChangeRound)
@@ -477,7 +564,9 @@ hook.Add("OnRoundStart", "EndRoundHUDChange", EndChangeRound)
 local blockedweps = {
 	["nz_revive_morphine"] = true,
 	["nz_packapunch_arms"] = true,
+	["nz_chalk_arms"] = true,
 	["nz_perk_bottle"] = true,
+	["weapon_afterlife"] = true
 }
 
 function GM:HUDWeaponPickedUp( wep )
@@ -575,3 +664,15 @@ function GM:HUDAmmoPickedUp( itemname, amount )
 	table.insert( self.PickupHistory, pickup )
 	self.PickupHistoryLast = pickup.time
 end
+
+local roundendmusic = {
+    "nz/round/round_end.mp3",
+    "nz/round/round_end2.mp3",
+	"nz/round/round_end3.mp3"
+}
+
+local roundstartmusic = {
+    "nz/round/round_start.mp3",
+    "nz/round/round_start2.mp3",
+    "nz/round/round_start3.mp3"
+}

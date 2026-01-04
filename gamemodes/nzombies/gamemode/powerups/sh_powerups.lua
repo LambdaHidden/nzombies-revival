@@ -85,7 +85,13 @@ if SERVER then
 		local id = specific and specific or nzMisc.WeightedRandom(choices)
 		if !id or id == "null" then return end --  Back out
 		
-		local ent = ents.Create("drop_powerup")
+		local ent = ents.Create("drop_powerup_global")
+		local PowerupData = self:Get(id)
+		if PowerupData.global then
+			ent = ents.Create("drop_powerup_global")
+		elseif !PowerupData.global then
+			ent = ents.Create("drop_powerup_private")
+		end
 		id = hook.Call("OnPowerUpSpawned", nil, id, ent) or id
 		if !IsValid(ent) then return end -- If a hook removed the powerup
 
@@ -163,7 +169,7 @@ end
 -- Double Points
 nzPowerUps:NewPowerUp("dp", {
 	name = "Double Points",
-	model = "models/nzpowerups/x2.mdl",
+	model = "models/nzpowerups/double_points.mdl",
 	global = true, -- Global means it will appear for any player and will refresh its own time if more
 	angle = Angle(25,0,0),
 	scale = 1,
@@ -177,7 +183,7 @@ nzPowerUps:NewPowerUp("dp", {
 -- Max Ammo
 nzPowerUps:NewPowerUp("maxammo", {
 	name = "Max Ammo",
-	model = "models/Items/BoxSRounds.mdl",
+	model = "models/nzpowerups/maxammo.mdl",
 	global = true,
 	angle = Angle(0,0,25),
 	scale = 1.5,
@@ -195,7 +201,7 @@ nzPowerUps:NewPowerUp("maxammo", {
 -- Insta Kill
 nzPowerUps:NewPowerUp("insta", {
 	name = "Insta Kill",
-	model = "models/nzpowerups/insta.mdl",
+	model = "models/nzpowerups/instakill.mdl",
 	global = true,
 	angle = Angle(0,0,0),
 	scale = 1,
@@ -225,7 +231,7 @@ nzPowerUps:NewPowerUp("nuke", {
 -- Fire Sale
 nzPowerUps:NewPowerUp("firesale", {
 	name = "Fire Sale",
-	model = "models/nzpowerups/firesale.mdl",
+	model = "models/nzpowerups/fire_sale.mdl",
 	global = true,
 	angle = Angle(45,0,0),
 	scale = 0.75,
@@ -269,9 +275,9 @@ nzPowerUps:NewPowerUp("carpenter", {
 })
 
 -- Zombie Blood
-nzPowerUps:NewPowerUp("zombieblood", {
+nzPowerUps:NewPowerUp("zombie_blood", {
 	name = "Zombie Blood",
-	model = "models/nzpowerups/zombieblood.mdl",
+	model = "models/nzpowerups/zombie_blood.mdl",
 	global = false, -- Only applies to the player picking it up and time is handled individually per player
 	angle = Angle(0,0,0),
 	scale = 1,
@@ -287,9 +293,9 @@ nzPowerUps:NewPowerUp("zombieblood", {
 })
 
 -- Death Machine
-nzPowerUps:NewPowerUp("deathmachine", {
+nzPowerUps:NewPowerUp("death_machine", {
 	name = "Death Machine",
-	model = "models/nzpowerups/deathmachine.mdl",
+	model = "models/nzpowerups/death_machine.mdl",
 	global = false, -- Only applies to the player picking it up and time is handled individually per player
 	angle = Angle(0,0,0),
 	scale = 1,

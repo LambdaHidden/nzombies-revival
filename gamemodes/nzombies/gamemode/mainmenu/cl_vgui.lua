@@ -117,7 +117,7 @@ function MenuToolBar:Init()
 		end
 	end
 
-	self:AddEntry( "WORKSHOP PAGE", "medium", function() gui.OpenURL( "https://steamcommunity.com/sharedfiles/filedetails/?id=3626312419" ) end )
+	self:AddEntry( "WORKSHOP PAGE", "medium", function() gui.OpenURL( "http://steamcommunity.com/sharedfiles/filedetails/?id=675138912" ) end )
 	
 	self:AddEntry( "Press F1 to toggle this menu", "small", function() RunConsoleCommand("nz_settings") end )
 	

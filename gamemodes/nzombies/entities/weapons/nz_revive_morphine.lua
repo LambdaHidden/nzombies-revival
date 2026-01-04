@@ -47,9 +47,7 @@ SWEP.NZPreventBox = true
 SWEP.NZTotalBlacklist = true
 
 function SWEP:Initialize()
-
 	self:SetHoldType( "slam" )
-
 end
 
 function SWEP:Deploy()
@@ -58,7 +56,7 @@ function SWEP:Deploy()
 end
 
 function SWEP:Equip( owner )
-	owner:SetActiveWeapon("nz_revive_morphine")
+	if !owner:GetNW2Bool("IsInAfterlife") then owner:SelectWeapon("nz_revive_morphine") end
 end
 
 function SWEP:PrimaryAttack()

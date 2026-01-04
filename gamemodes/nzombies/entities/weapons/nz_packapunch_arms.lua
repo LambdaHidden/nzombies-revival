@@ -30,6 +30,7 @@ SWEP.HoldType = "slam"
 
 SWEP.ViewModel	= "models/weapons/c_packapunch_arms.mdl"
 SWEP.WorldModel	= ""
+SWEP.ViewModelFOV = 68
 SWEP.UseHands = true
 SWEP.vModel = true
 

@@ -16,7 +16,7 @@ end
 
 function ENT:Initialize()
 	
-	self:SetModel("models/nzpowerups/bloodmoney.mdl")
+	self:SetModel("models/nzpowerups/blood_money.mdl")
 	--self:PhysicsInit(SOLID_VPHYSICS)
 	self:PhysicsInitSphere(60, "default_silent")
 	self:SetMoveType(MOVETYPE_NONE)
@@ -28,7 +28,6 @@ function ENT:Initialize()
 		self.NextParticle = CurTime()
 	end
 	self:UseTriggerBounds(true, 0)
-	self:SetMaterial("models/shiny.vtf")
 	self:SetColor( Color(255,200,0) )
 	--self:SetTrigger(true)
 	

@@ -89,12 +89,16 @@ function GM:EntityTakeDamage(zombie, dmginfo)
 			local hitgroup = util.QuickTrace( dmginfo:GetDamagePosition( ), dmginfo:GetDamagePosition( ) ).HitGroup
 
 			if nzPowerUps:IsPowerupActive("insta") then
-				zombie:Kill(dmginfo)
+				dmginfo:ScaleDamage(zombie:Health()) --zombie:Kill(dmginfo)
 				nzEnemies:OnEnemyKilled(zombie, attacker, dmginfo, hitgroup)
 			return end
+			
+			local inflictor = dmginfo:GetInflictor()
+			if IsValid(inflictor) and inflictor:GetClass() == "nz_fraggrenade" then 
+				dmginfo:ScaleDamage(2.5) --buff damage grenade
+			end
 
-
-			if hitgroup == HITGROUP_HEAD then dmginfo:ScaleDamage(2) end
+			if hitgroup == HITGROUP_HEAD then dmginfo:ScaleDamage(3) end --buff head shot damage
 
 			--  Pack-a-Punch doubles damage
 			if dmginfo:GetAttacker():GetActiveWeapon():HasNZModifier("pap") then dmginfo:ScaleDamage(2) end

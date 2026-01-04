@@ -119,9 +119,9 @@ nzPerks:NewPerk("revive", {
 	func = function(self, ply, machine)
 			if #player.GetAllPlaying() <= 1 then
 				if !ply.SoloRevive or ply.SoloRevive < 3 or !IsValid(machine) then
-					ply:ChatPrint("You got Quick Revive (Solo)!")
+					ply:ChatPrint("You got solo Revive.")
 				else
-					ply:ChatPrint("You can only get Quick Revive Solo 3 times.")
+					ply:ChatPrint("You can only get solo Revive 3 times.")
 					return false
 				end
 			end
@@ -361,17 +361,18 @@ nzPerks:NewPerk("staminup", {
 	icon = Material("perk_icons/staminup.png", "smooth unlitgeneric"),
 	color = Color(200, 255, 100),
 	func = function(self, ply, machine)
-		ply:SetRunSpeed(350)
-		ply:SetMaxRunSpeed( 350 )
+		ply:SetRunSpeed(375)
+		ply:SetMaxRunSpeed( 375 )
 		ply:SetStamina( 200 )
 		ply:SetMaxStamina( 200 )
 	end,
 	lostfunc = function(self, ply)
-		ply:SetRunSpeed(300)
-		ply:SetMaxRunSpeed( 300 )
+		ply:SetRunSpeed(325)
+		ply:SetMaxRunSpeed( 325 )
 		ply:SetStamina( 100 )
 		ply:SetMaxStamina( 100 )
 	end,
+	
 })
 
 nzPerks:NewPerk("phd", {
@@ -392,7 +393,7 @@ nzPerks:NewPerk("deadshot", {
 	name = "Deadshot Daiquiri",
 	off_model = "models/alig96/perks/deadshot/deadshot_off.mdl",
 	on_model = "models/alig96/perks/deadshot/deadshot.mdl",
-	price = 2000,
+	price = 1500,
 	material = "models/perk_bottle/c_perk_bottle_deadshot",
 	icon = Material("perk_icons/deadshot.png", "smooth unlitgeneric"),
 	color = Color(150, 200, 150),
@@ -439,7 +440,7 @@ nzPerks:NewPerk("whoswho", {
 	name = "Who's Who",
 	off_model = "models/alig96/perks/whoswho/whoswho_off.mdl",
 	on_model = "models/alig96/perks/whoswho/whoswho.mdl",
-	price = 2000,
+	price = 15000,
 	material = "models/perk_bottle/c_perk_bottle_whoswho",
 	icon = Material("perk_icons/whoswho.png", "smooth unlitgeneric"),
 	color = Color(100, 100, 255),

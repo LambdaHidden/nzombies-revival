@@ -160,18 +160,15 @@ if SERVER then
 	
 	local oldsetwep = playerMeta.SetActiveWeapon
 	function playerMeta:SetActiveWeapon(wep)
+		print("function_override/SetActiveWeapon")
+		if isstring(wep) then
+			wep = self:GetWeapon(wep)
+		end
 		local oldwep = self:GetActiveWeapon()
 		if IsValid(oldwep) and !oldwep:IsSpecial() then
 			self.NZPrevWep = oldwep
 		end
-		
-		if isstring(wep) then
-			wepEnt = self:GetWeapon(wep) or nil
-		else
-			wepEnt = wep
-		end
-		
-		oldsetwep(self, wepEnt)
+		oldsetwep(self, wep)
 	end
 	
 else

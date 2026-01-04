@@ -27,7 +27,7 @@ function ENT:Initialize()
 	end
 	self:UseTriggerBounds(true, 0)
 	self:DrawShadow(false)
-	self:SetMaterial("models/shiny.vtf")
+	--self:SetMaterial("models/shiny.vtf")
 	self:SetColor( Color(255,200,0) )
 	
 	self.OwnerData = {}

@@ -238,17 +238,18 @@ function ENT:OnSpawn()
 	effectData:SetMagnitude(dur)
 	util.Effect("zombie_spawn_dust", effectData)
 
+	--constraint.NoCollide( nz_zombie_walker, nz_zombie_walker, 0, 0 )
+	self:SetCollisionGroup(COLLISION_GROUP_INTERACTIVE_DEBRIS)
+
 	-- play emerge animation on spawn
 	-- if we have a coroutine else just spawn the zombie without emerging for now.
 	if coroutine.running() then
-		if seq ~= -1 then
-			timer.Simple(dur, function()
-				if IsValid(self) and self:Health() <= 0 then
-					self:BecomeRagdoll(DamageInfo())
-				end
-			end) 
-			self:PlaySequenceAndWait(seq)
-		end
+		timer.Simple(dur, function()
+			if IsValid(self) and self:Health() <= 0 then
+				self:BecomeRagdoll(DamageInfo())
+			end
+		end)
+		self:PlaySequenceAndWait(seq)
 	end
 end
 
@@ -262,6 +263,7 @@ function ENT:OnZombieDeath(dmgInfo)
 		local seq, dur = self:LookupSequence(self.ElectrocutionSequences[math.random(#self.ElectrocutionSequences)])
 		self:ResetSequence(seq)
 		self:SetCycle(0)
+												
 		-- Emit electrocution scream here when added
 		timer.Simple(dur, function()
 			if IsValid(self) then

@@ -64,8 +64,8 @@ surface.CreateFont( "nz.display.hud.smaller", {
 
 surface.CreateFont( "nz.display.hud.rounds", {
 	font = "DK Umbilical Noose", //Avenir Next
-	size = 400,
-	weight = 30,
+	size = 160,
+	weight = 15,
 	antialias = true,
 } )
 

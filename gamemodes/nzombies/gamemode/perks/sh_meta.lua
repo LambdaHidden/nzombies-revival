@@ -1,6 +1,6 @@
 local playerMeta = FindMetaTable("Player")
 if SERVER then
-
+	
 	function playerMeta:GivePerk(id, machine)
 		local block = hook.Call("OnPlayerBuyPerk", nil, self, id, machine)
 	

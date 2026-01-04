@@ -265,7 +265,7 @@ function nzRound:Think()
 	if self.Frozen then return end
 	hook.Call( "OnRoundThink", self )
 	--If all players are dead, then end the game.
-	if #player.GetAllPlayingAndAlive() < 1 then
+	if table.IsEmpty(player.GetAllPlayingAndAlive()) then
 		self:End()
 		timer.Remove( "NZRoundThink" )
 		return -- bail
