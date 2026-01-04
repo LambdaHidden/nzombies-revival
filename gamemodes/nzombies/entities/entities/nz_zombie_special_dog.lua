@@ -228,7 +228,7 @@ function ENT:GetPriorityTarget()
 	-- Well if he exists and he is targetable, just target this guy!
 	if IsValid(self:GetTarget()) and self:GetTarget():GetTargetPriority() > 0 then
 		local dist = self:GetRangeSquaredTo( self:GetTarget():GetPos() )
-		if dist <= 999999 then
+		if dist < 1000 then -- <= 999999
 			if !self.sprinting then
 				self:EmitSound( self.SprintSounds[ math.random( #self.SprintSounds ) ], 100 )
 				self.sprinting = true

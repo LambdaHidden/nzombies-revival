@@ -21,10 +21,10 @@ ENT.DeathDropHeight = 700
 ENT.StepHeight = 22 --Default is 18 but it makes things easier
 ENT.JumpHeight = 70
 ENT.AttackRange = 65
-ENT.RunSpeed = 160
+ENT.RunSpeed = 200 --160
 ENT.WalkSpeed = 100
 ENT.Acceleration = 400
-ENT.DamageLow = 40
+ENT.DamageLow = 35 --40
 ENT.DamageHigh = 45
 
 -- important for ent:IsZombie()

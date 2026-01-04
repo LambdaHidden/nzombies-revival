@@ -18,7 +18,7 @@ SWEP.UseHands = true
 
 SWEP.Spawnable			= false
 SWEP.AdminSpawnable		= false
-SWEP.DrawCrosshair		= false
+--SWEP.DrawCrosshair		= false
 
 CROWBAR_RANGE	= 75.0
 CROWBAR_REFIRE	= 0.4

@@ -48,7 +48,7 @@ SWEP.Secondary.Ammo			= "none"
 SWEP.NextReload				= 1
 
 SWEP.Primary.Damage 		= 200
-SWEP.Range					= 135
+SWEP.Range					= 100 --135
 
 
 function SWEP:Initialize()
@@ -104,7 +104,7 @@ function SWEP:PrimaryAttack()
 		if math.random(0,1) == 0 then
 			self:SendWeaponAnim( ACT_VM_HITCENTER )
 			ply:SetAnimation( PLAYER_ATTACK1 )
-			self.nzHolsterTime = CurTime() + 0.5
+			self.nzHolsterTime = CurTime() + 1
 			self:EmitSound("nz/bowie/stab/bowie_stab_0"..math.random(0,2)..".wav")
 		else
 			self:SendWeaponAnim( ACT_VM_PRIMARYATTACK )

@@ -74,7 +74,7 @@ function SWEP:PrimaryAttack()
 	local shootang = self.Owner:GetAimVector()
 	
 	local bullet = {}
-	bullet.Damage = 536870912
+	bullet.Damage = 9000 --536870912
 	bullet.Force = 10
 	bullet.Tracer = 1
 	bullet.TracerName = "AirboatGunHeavyTracer"
