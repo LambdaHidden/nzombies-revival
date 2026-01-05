@@ -17,3 +17,5 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=3626484548
 
 There still might be some bugs in this due to its age, though I might be able to fix it in the future.
 If you have any fixes you can provide, feel free to do a pull request.
+
+Special thanks to Hidden, Dj_Nathan_, and Global for providing a patched version for me to work off of.
