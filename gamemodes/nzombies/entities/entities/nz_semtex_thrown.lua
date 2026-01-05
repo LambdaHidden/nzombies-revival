@@ -98,7 +98,7 @@ function ENT:SetExplosionTimer( time )
 					end
 				end
 			else
-				util.BlastDamage(self, owner, pos, 350, 50) --80
+				util.BlastDamage(self, owner, pos, 350, 80)
 			end
 			
 			local fx = EffectData()

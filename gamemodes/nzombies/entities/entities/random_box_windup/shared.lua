@@ -23,6 +23,8 @@ function ENT:Initialize()
 
 	self:SetSolid( SOLID_OBB )
 	self:DrawShadow( false )
+	
+	self:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
 
 	self:SetWinding(true)
 	self:SetIsTeddy(false)
