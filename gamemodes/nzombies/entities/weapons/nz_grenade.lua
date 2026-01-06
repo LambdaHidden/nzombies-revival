@@ -91,7 +91,7 @@ end
 
 function SWEP:PrimaryAttack()
 	if self.FuckedUp then return end
-	self:ThrowGrenade(5500)
+	self:ThrowGrenade(6000) --5500
 end
 
 function SWEP:SecondaryAttack()
