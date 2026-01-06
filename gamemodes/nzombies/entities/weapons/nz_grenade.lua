@@ -106,7 +106,7 @@ function SWEP:ThrowGrenade(force)
 		if self.Owner:HasPerk("widowswine") then
 			nade = ents.Create("nz_semtex_thrown")
 		else
-			nade = ents.Create("nz_m67grenade")
+			nade = ents.Create("nz_grenade_thrown")
 		end
 		nade:SetPos(self.Owner:EyePos() + (self.Owner:GetAimVector() * 20))
 		nade:SetAngles( Angle(30,0,0)  )
