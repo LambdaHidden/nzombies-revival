@@ -561,6 +561,8 @@ if nzAfterlife then hook.Add("HUDPaint", "afterlifeHUD", AfterlifeHud ) end
 ]]
 -- Fix rendering order
 hook.Add("HUDPaint", "nz_MainHUD_Controller", function()
+	VultureVision()
+    if nzAfterlife then AfterlifeHud() end
     StatesHud()
     ScoreHud()
     DrawPointsNotification() 
@@ -569,8 +571,6 @@ hook.Add("HUDPaint", "nz_MainHUD_Controller", function()
     PerksHud()
     PowerUpsHud()
     RoundHud()
-	VultureVision()
-    if nzAfterlife then AfterlifeHud() end
 end)
 
 hook.Add("OnRoundPreparation", "BeginRoundHUDChange", StartChangeRound)
