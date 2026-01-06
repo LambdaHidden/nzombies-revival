@@ -548,19 +548,19 @@ end
 
 -- Hooks
 --[[
-hook.Add("HUDPaint", "0_vultureVision", VultureVision )
-hook.Add("HUDPaint", "1_roundHUD", StatesHud )
-hook.Add("HUDPaint", "2_scoreHUD", ScoreHud )
-hook.Add("HUDPaint", "3_pointsNotifcationHUD", DrawPointsNotification )
-hook.Add("HUDPaint", "4_gunHUD", GunHud )
-hook.Add("HUDPaint", "5_grenadeHUD", DrawGrenadeHud )
-hook.Add("HUDPaint", "6_perksHUD", PerksHud )
-hook.Add("HUDPaint", "7_powerupHUD", PowerUpsHud )
-hook.Add("HUDPaint", "8_roundnumHUD", RoundHud )
+hook.Add("HUDPaint", "pointsNotifcationHUD", DrawPointsNotification )
+hook.Add("HUDPaint", "roundHUD", StatesHud )
+hook.Add("HUDPaint", "scoreHUD", ScoreHud )
+hook.Add("HUDPaint", "gunHUD", GunHud )
+hook.Add("HUDPaint", "powerupHUD", PowerUpsHud )
+hook.Add("HUDPaint", "perksHUD", PerksHud )
+hook.Add("HUDPaint", "vultureVision", VultureVision )
+hook.Add("HUDPaint", "roundnumHUD", RoundHud )
+hook.Add("HUDPaint", "grenadeHUD", DrawGrenadeHud )
 if nzAfterlife then hook.Add("HUDPaint", "afterlifeHUD", AfterlifeHud ) end
 ]]
+-- Fix rendering order
 hook.Add("HUDPaint", "nz_MainHUD_Controller", function()
-    VultureVision()
     StatesHud()
     ScoreHud()
     DrawPointsNotification() 
@@ -569,6 +569,7 @@ hook.Add("HUDPaint", "nz_MainHUD_Controller", function()
     PerksHud()
     PowerUpsHud()
     RoundHud()
+	VultureVision()
     if nzAfterlife then AfterlifeHud() end
 end)
 
