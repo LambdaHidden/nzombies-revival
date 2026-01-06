@@ -373,7 +373,7 @@ local function RoundHud()
 	local w = 35
 	local h = ScrH() - 15
 	local round = round_num
-	local col = Color(100 + round_white*55, round_white, round_white,round_alpha)
+	local col = Color(200 + round_white*55, round_white, round_white,round_alpha)
 	if round == -1 then
 		--text = "∞"
 		surface.SetMaterial(infmat)
@@ -547,16 +547,30 @@ local function AfterlifeHud()
 end
 
 -- Hooks
-hook.Add("HUDPaint", "pointsNotifcationHUD", DrawPointsNotification )
-hook.Add("HUDPaint", "roundHUD", StatesHud )
-hook.Add("HUDPaint", "scoreHUD", ScoreHud )
-hook.Add("HUDPaint", "gunHUD", GunHud )
-hook.Add("HUDPaint", "powerupHUD", PowerUpsHud )
-hook.Add("HUDPaint", "perksHUD", PerksHud )
-hook.Add("HUDPaint", "vultureVision", VultureVision )
-hook.Add("HUDPaint", "roundnumHUD", RoundHud )
-hook.Add("HUDPaint", "grenadeHUD", DrawGrenadeHud )
+--[[
+hook.Add("HUDPaint", "0_vultureVision", VultureVision )
+hook.Add("HUDPaint", "1_roundHUD", StatesHud )
+hook.Add("HUDPaint", "2_scoreHUD", ScoreHud )
+hook.Add("HUDPaint", "3_pointsNotifcationHUD", DrawPointsNotification )
+hook.Add("HUDPaint", "4_gunHUD", GunHud )
+hook.Add("HUDPaint", "5_grenadeHUD", DrawGrenadeHud )
+hook.Add("HUDPaint", "6_perksHUD", PerksHud )
+hook.Add("HUDPaint", "7_powerupHUD", PowerUpsHud )
+hook.Add("HUDPaint", "8_roundnumHUD", RoundHud )
 if nzAfterlife then hook.Add("HUDPaint", "afterlifeHUD", AfterlifeHud ) end
+]]
+hook.Add("HUDPaint", "nz_MainHUD_Controller", function()
+    VultureVision()
+    StatesHud()
+    ScoreHud()
+    DrawPointsNotification() 
+    GunHud()
+    DrawGrenadeHud()
+    PerksHud()
+    PowerUpsHud()
+    RoundHud()
+    if nzAfterlife then AfterlifeHud() end
+end)
 
 hook.Add("OnRoundPreparation", "BeginRoundHUDChange", StartChangeRound)
 hook.Add("OnRoundStart", "EndRoundHUDChange", EndChangeRound)
