@@ -138,7 +138,7 @@ end
 
 function nzPowerUps:CleanUp()
 	-- Clear all powerups
-	for k,v in pairs(ents.FindByClass("drop_powerup_global") or ents.FindByClass("drop_powerup_private")) do
+	for k,v in pairs(ents.FindByClass("drop_powerup")) do --ents.FindByClass("drop_powerup_global") or ents.FindByClass("drop_powerup_private")
 		v:Remove()
 	end
 	
