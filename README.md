@@ -6,11 +6,8 @@ This is for those "classic nZombies enthusiasts" that want to relive the old nZo
 
 This also includes modifications to fix up and improve the gamemode without drastically changing it to keep it faithful to the original.
 
-Get the gamemode here:
+Get the gamemode here (content packs listed in required items):
 https://steamcommunity.com/sharedfiles/filedetails/?id=3626312419
-
-Get the content pack with all models and materials here:
-http://steamcommunity.com/sharedfiles/filedetails/?id=675138912
 
 A collection with content and weapon packs for the gamemode:
 https://steamcommunity.com/sharedfiles/filedetails/?id=3626484548
