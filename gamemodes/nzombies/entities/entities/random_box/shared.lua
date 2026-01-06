@@ -163,7 +163,10 @@ function ENT:MoveAway()
 		self:SetGravity(0.1)
 		self:SetNotSolid(true)
 		self:SetCollisionBounds(Vector(0,0,0), Vector(0,0,0))
-		self:GetPhysicsObject():SetDamping(100, 0)
+		phys = self:GetPhysicsObject()
+		if phys then
+			phys:SetDamping(100, 0)
+		end
 		self:CollisionRulesChanged()
 		self:SetLocalVelocity(ang:Up()*100)
 		timer.Simple(1.5, function()
