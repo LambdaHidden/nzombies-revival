@@ -85,18 +85,13 @@ if SERVER then
 		local id = specific and specific or nzMisc.WeightedRandom(choices)
 		if !id or id == "null" then return end --  Back out
 		
-		local ent = ents.Create("drop_powerup_global")
+		local ent = ents.Create("drop_powerup")
 		local PowerupData = self:Get(id)
-		if PowerupData.global then
-			ent = ents.Create("drop_powerup_global")
-		elseif !PowerupData.global then
-			ent = ents.Create("drop_powerup_private")
-		end
-		id = hook.Call("OnPowerUpSpawned", nil, id, ent) or id
+		id = hook.Call("OnPowerUpSpawned", nil, id, ent) or id -- Users can override the ID or prevent the powerup from spawning.
 		if !IsValid(ent) then return end -- If a hook removed the powerup
 
 		-- Spawn it
-		local PowerupData = self:Get(id)
+		PowerupData = self:Get(id)
 
 		local pos = pos+Vector(0,0,50)
 		
