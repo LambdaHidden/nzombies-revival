@@ -34,14 +34,14 @@ function nzPowerUps:Nuke(pos, nopoints, noeffect)
 			if v:IsValidZombie() then
 				if IsValid(v) then
 					v:SetBlockAttack(true) -- They cannot attack now!
+					local insta = DamageInfo()
+					insta:SetAttacker(Entity(0))
+					insta:SetDamageType(DMG_BLAST_SURFACE)
 					-- Delay the death by the distance from the position in milliseconds
 					local time = v:GetPos():Distance(pos)/1000
 					if time > highesttime then highesttime = time end
 					timer.Simple(time, function()
 						if IsValid(v) then
-							local insta = DamageInfo()
-							insta:SetAttacker(Entity(0))
-							insta:SetDamageType(DMG_BLAST_SURFACE)
 							insta:SetDamage(v:Health())
 							v:TakeDamageInfo( insta )
 						end
@@ -54,12 +54,12 @@ function nzPowerUps:Nuke(pos, nopoints, noeffect)
 			if v:IsValidZombie() then
 				print(v, IsValid(v))
 				if IsValid(v) then
+					local insta = DamageInfo()
+					insta:SetAttacker(Entity(0))
+					insta:SetInflictor(Entity(0))
+					insta:SetDamageType(DMG_BLAST_SURFACE)
 					timer.Simple(0.1, function()
 						if IsValid(v) then
-							local insta = DamageInfo()
-							insta:SetAttacker(Entity(0))
-							insta:SetInflictor(Entity(0))
-							insta:SetDamageType(DMG_BLAST_SURFACE)
 							insta:SetDamage(v:Health())
 							v:TakeDamageInfo( insta )
 						end
@@ -138,7 +138,7 @@ end
 
 function nzPowerUps:CleanUp()
 	-- Clear all powerups
-	for k,v in pairs(ents.FindByClass("drop_powerup_global") or ents.FindByClass("drop_powerup_private")) do
+	for k,v in pairs(ents.FindByClass("drop_powerup")) do
 		v:Remove()
 	end
 	
