@@ -28,7 +28,7 @@ function ENT:Initialize()
 		self.NextParticle = CurTime()
 	end
 	self:UseTriggerBounds(true, 0)
-	self:SetColor( Color(255,200,0) )
+	--self:SetColor( Color(255,200,0) )
 	--self:SetTrigger(true)
 	
 	--[[timer.Create( self:EntIndex().."_deathtimer", 30, 1, function()
@@ -68,7 +68,7 @@ if CLIENT then
 		if CurTime() > self.NextParticle then
 			local effectdata = EffectData()
 			effectdata:SetOrigin( self:GetPos() )
-			util.Effect( "powerup_glow", effectdata )
+			util.Effect( "powerup_glow_private", effectdata )
 			self.NextParticle = CurTime() + particledelay
 		end
 		self:DrawModel()
