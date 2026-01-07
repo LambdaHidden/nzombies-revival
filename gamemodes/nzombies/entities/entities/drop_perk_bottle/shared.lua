@@ -40,6 +40,21 @@ function ENT:Initialize()
 		end
 	end)]]
 	self.RemoveTime = CurTime() + 30
+	
+	if CLIENT then
+		local tempPrivate = {}
+		local tempShared = {}
+		
+		for k, v in ipairs(ents.FindByClass("drop_perk_bottle")) do
+			if v:GetShared() then
+				table.insert(tempShared, v)
+			else
+				table.insert(tempPrivate, v)
+			end
+		end
+		privateBottles = tempPrivate
+		sharedBottles = tempShared
+	end
 end
 
 if SERVER then
@@ -103,11 +118,7 @@ if CLIENT then
 		if CurTime() > self.NextParticle then
 			local effectdata = EffectData()
 			effectdata:SetOrigin( self:GetPos() )
-			if self:GetShared() then
-				util.Effect( "powerup_glow_private", effectdata )
-			else
-				util.Effect( "powerup_glow", effectdata ) --powerup_glow_global
-			end
+			util.Effect( self:GetShared() and "powerup_glow" or "powerup_glow_private", effectdata ) --powerup_glow_global
 			self.NextParticle = CurTime() + particledelay
 		end
 		self:DrawModel()
@@ -118,20 +129,15 @@ if CLIENT then
 		self:SetRenderAngles(Angle(0,60,20)*math.sin((self.RemoveTime - CurTime())*0.6) + Angle(20,0,0)*math.sin((self.RemoveTime - CurTime())*0.4))
 	end
 	
+	local privateBottles = {}
+	local sharedBottles = {}
+	local color_private = Color( 0, 100, 200 )
+	local color_shared = Color( 50, 175, 50 )
 	hook.Add( "PreDrawHalos", "drop_powerups_halos_bottle", function()
-		local shared, private = {}, {}
-		
-		for k, v in pairs( ents.FindByClass( "drop_perk_bottle" )) do
-			if v.GetShared and v:GetShared() then
-				table.insert(shared, v)
-			else
-				table.insert(private, v)
-			end
-		end
-		halo.Add( private, Color( 0, 100, 200 ), 8, 8, 9 )
-		halo.Add( shared, Color( 50, 175, 50 ), 8, 8, 6 )
+		halo.Add( privateBottles, color_private, 2, 2, 2 ) -- 8, 8, 9
+		halo.Add( sharedBottles, color_shared, 2, 2, 2 )
 	end )
-	/*
+	--[[
 	hook.Add( "PreDrawHalos", "drop_powerups_halos_bottle", function()
 		local full, empty = {}, {}
 		
@@ -144,5 +150,5 @@ if CLIENT then
 		end
 		halo.Add( empty, Color( 0, 100, 200 ), 8, 8, 9 )
 		halo.Add( full, Color( 50, 175, 50 ), 8, 8, 6 )
-	end )*/
+	end )]]
 end
