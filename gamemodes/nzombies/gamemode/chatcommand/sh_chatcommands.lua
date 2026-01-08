@@ -12,6 +12,19 @@ end, false, "Opens the cheat panel.")
 
 -- Chat Commands
 
+nzChatCommand.Add("/fixme", SERVER, function(ply, text) -- From nZR
+	if IsValid(ply) then
+		ply:SetUsingSpecialWeapon(false)
+		ply:EquipPreviousWeapon()
+		ply:ConCommand("snd_restart")
+
+		timer.Simple(0, function()
+			if not IsValid(ply) then return end
+			nzMapping:SendMapData(ply)
+		end)
+	end
+end, true, "Fixes your player.")
+
 nzChatCommand.Add("/help", SERVER, function(ply, text)
 	ply:PrintMessage( HUD_PRINTTALK, "-----" )
 	ply:PrintMessage( HUD_PRINTTALK, "[nZ] Available commands:" )
