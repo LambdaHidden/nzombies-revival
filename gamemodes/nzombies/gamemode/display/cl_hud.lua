@@ -298,9 +298,9 @@ local function DrawPointsNotification()
 		local fade = math.Clamp((CurTime()-v.time), 0, 1)
 		if !v.ply.PointsSpawnPosition then return end
 		if v.amount >= 0 then
-			draw.SimpleText(v.amount, font, v.ply.PointsSpawnPosition.x + 70*fade, v.ply.PointsSpawnPosition.y + v.diry*fade, Color(255,255,0,255-255*fade), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
+			draw.SimpleText(v.amount, font, v.ply.PointsSpawnPosition.x + 100*fade, v.ply.PointsSpawnPosition.y + v.diry*fade, Color(255,255,0,255-255*fade), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
 		else
-			draw.SimpleText(v.amount, font, v.ply.PointsSpawnPosition.x + 70*fade, v.ply.PointsSpawnPosition.y + v.diry*fade, Color(255,0,0,255-255*fade), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
+			draw.SimpleText(v.amount, font, v.ply.PointsSpawnPosition.x + 100*fade, v.ply.PointsSpawnPosition.y + v.diry*fade, Color(255,0,0,255-255*fade), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
 		end
 		if fade >= 1 then
 			table.remove(PointsNotifications, k)
@@ -547,7 +547,6 @@ local function AfterlifeHud()
 end
 
 -- Hooks
---[[
 hook.Add("HUDPaint", "pointsNotifcationHUD", DrawPointsNotification )
 hook.Add("HUDPaint", "roundHUD", StatesHud )
 hook.Add("HUDPaint", "scoreHUD", ScoreHud )
@@ -558,20 +557,6 @@ hook.Add("HUDPaint", "vultureVision", VultureVision )
 hook.Add("HUDPaint", "roundnumHUD", RoundHud )
 hook.Add("HUDPaint", "grenadeHUD", DrawGrenadeHud )
 if nzAfterlife then hook.Add("HUDPaint", "afterlifeHUD", AfterlifeHud ) end
-]]
--- Fix rendering order
-hook.Add("HUDPaint", "nz_MainHUD_Controller", function()
-	VultureVision()
-    StatesHud()
-    ScoreHud()
-    DrawPointsNotification() 
-    GunHud()
-    DrawGrenadeHud()
-	if nzAfterlife then AfterlifeHud() end
-    PerksHud()
-    PowerUpsHud()
-    RoundHud()
-end)
 
 hook.Add("OnRoundPreparation", "BeginRoundHUDChange", StartChangeRound)
 hook.Add("OnRoundStart", "EndRoundHUDChange", EndChangeRound)
