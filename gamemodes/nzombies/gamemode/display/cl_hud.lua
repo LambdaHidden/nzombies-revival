@@ -81,15 +81,15 @@ local function ScoreHud()
 					--for i = 0, 8 do
 						--surface.SetMaterial(bloodDecals[((index + i - 1) % #bloodDecals) + 1 ])
 						surface.SetMaterial(blood)
-						surface.DrawTexturedRect(10 , ScrH() - 175 * scale - offset, textW + 150, 45)
+						surface.DrawTexturedRect(ScrW() - textW - 180, ScrH() - 275 * scale - offset, textW + 150, 45)
 					--end
 					--surface.DrawTexturedRect(ScrW() - 325*scale - numname * 10, ScrH() - 285*scale - (30*k), 250 + numname*10, 35)
-					if text then draw.SimpleText(text, font, 40, ScrH() - 154 * scale - offset, color, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER) end
+					if text then draw.SimpleText(text, font, ScrW() - textW - 60, ScrH() - 255 * scale - offset, color, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER) end
 					if LocalPlayer() == v then
 						font = "nz.display.hud.medium"
 					end
-					draw.SimpleText(v:GetPoints(), font, textW + 65 - nameoffset, ScrH() - 154 * scale - offset, color, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-					v.PointsSpawnPosition = {x = textW + 140, y = ScrH() - 154 * scale - offset}
+					draw.SimpleText(v:GetPoints(), font, ScrW() - textW - 60 - nameoffset, ScrH() - 255 * scale - offset, color, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
+					v.PointsSpawnPosition = {x = ScrW() - textW - 170, y = ScrH() - 255 * scale - offset}
 				end
 			end
 		end
@@ -298,9 +298,9 @@ local function DrawPointsNotification()
 		local fade = math.Clamp((CurTime()-v.time), 0, 1)
 		if !v.ply.PointsSpawnPosition then return end
 		if v.amount >= 0 then
-			draw.SimpleText(v.amount, font, v.ply.PointsSpawnPosition.x + 100*fade, v.ply.PointsSpawnPosition.y + v.diry*fade, Color(255,255,0,255-255*fade), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
+			draw.SimpleText(v.amount, font, v.ply.PointsSpawnPosition.x - 50*fade, v.ply.PointsSpawnPosition.y + v.diry*fade, Color(255,255,0,255-255*fade), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
 		else
-			draw.SimpleText(v.amount, font, v.ply.PointsSpawnPosition.x + 100*fade, v.ply.PointsSpawnPosition.y + v.diry*fade, Color(255,0,0,255-255*fade), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
+			draw.SimpleText(v.amount, font, v.ply.PointsSpawnPosition.x - 50*fade, v.ply.PointsSpawnPosition.y + v.diry*fade, Color(255,0,0,255-255*fade), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
 		end
 		if fade >= 1 then
 			table.remove(PointsNotifications, k)
