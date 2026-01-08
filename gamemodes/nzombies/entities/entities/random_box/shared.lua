@@ -164,7 +164,7 @@ function ENT:MoveAway()
 		self:SetNotSolid(true)
 		self:SetCollisionBounds(Vector(0,0,0), Vector(0,0,0))
 		phys = self:GetPhysicsObject()
-		if phys then
+		if IsValid(phys) then
 			phys:SetDamping(100, 0)
 		end
 		self:CollisionRulesChanged()

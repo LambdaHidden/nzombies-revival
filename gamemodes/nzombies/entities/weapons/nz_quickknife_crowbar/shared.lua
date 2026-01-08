@@ -7,24 +7,23 @@ SWEP.Contact		= ""
 SWEP.Purpose		= ""
 SWEP.Instructions	= ""
 
-SWEP.ViewModelFOV	= 60
+SWEP.ViewModelFOV	= 54
 SWEP.ViewModelFlip	= false
-SWEP.ViewModel		= "models/weapons/knife/v_knife.mdl"
-SWEP.WorldModel		= "models/weapons/knife/w_knife.mdl"
---SWEP.AnimPrefix		= "crowbar"
-SWEP.HoldType		= "knife"
+SWEP.ViewModel		= "models/weapons/c_crowbar.mdl"
+SWEP.WorldModel		= "models/weapons/w_crowbar.mdl"
+SWEP.AnimPrefix		= "crowbar"
+SWEP.HoldType		= "melee"
 
 SWEP.UseHands = true
 
 SWEP.Spawnable			= false
 SWEP.AdminSpawnable		= false
---SWEP.DrawCrosshair		= false
 
 CROWBAR_RANGE	= 75.0
 CROWBAR_REFIRE	= 0.4
 
---SWEP.Primary.Sound			= "nz/knife/weapons/whoosh.wav"
---SWEP.Primary.Hit			= Sound("nz/bowie/swing/bowie_swing_01")
+SWEP.Primary.Sound			= Sound( "Weapon_Crowbar.Single" )
+SWEP.Primary.Hit			= Sound( "Weapon_Crowbar.Melee_Hit" )
 SWEP.Primary.Range			= CROWBAR_RANGE
 SWEP.Primary.Damage			= 75
 SWEP.Primary.DamageType		= DMG_CLUB
@@ -76,38 +75,29 @@ function SWEP:PrimaryAttack()
 		trace.start		= vecSrc
 		trace.endpos	= vecSrc + ( vecDirection * self:GetRange() )
 		trace.filter	= pPlayer
-	
+
 	local traceHit		= util.TraceLine( trace )
 
 	if ( traceHit.Hit ) then
 
-		if math.random(0,1) == 0 and !pPlayer:KeyDown(IN_BACK) then
-			self:SendWeaponAnim( ACT_VM_HITCENTER )
-			pPlayer:SetAnimation( PLAYER_ATTACK1 )
-			self.nzHolsterTime = CurTime() + 1
-			timer.Simple(0.1, function() self:EmitSound("nz/knife/knife_stab.wav") end)
-		else
-			self:SendWeaponAnim( ACT_VM_PRIMARYATTACK )
-			pPlayer:SetAnimation( PLAYER_ATTACK1 )
-			self.nzHolsterTime = CurTime() + 0.5
-			timer.Simple(0.1, function() self:EmitSound("nz/knife/knife_slash.wav") end)
-			--pPlayer:ViewPunch( Angle( math.Rand(-3, -2.5), math.Rand(-7, -4.5), 0 ) )
-		end
+		self.Weapon:EmitSound( self.Primary.Hit );
+
+		self.Weapon:SendWeaponAnim( ACT_VM_HITCENTER );
+		pPlayer:SetAnimation( PLAYER_ATTACK1 );
 
 		self.Weapon:SetNextPrimaryFire( CurTime() + self:GetFireRate() );
 		self.Weapon:SetNextSecondaryFire( CurTime() + self.Weapon:SequenceDuration() );
 
-		timer.Simple(0.1, function() self:Hit( traceHit, pPlayer ); end)
+		self:Hit( traceHit, pPlayer );
 
 		return
 
 	end
 
-	self.Weapon:EmitSound("nz/knife/whoosh.wav")
+	self.Weapon:EmitSound( self.Primary.Sound );
 
-	self.Weapon:SendWeaponAnim( ACT_VM_PRIMARYATTACK )
+	self.Weapon:SendWeaponAnim( ACT_VM_MISSCENTER );
 	pPlayer:SetAnimation( PLAYER_ATTACK1 );
-	--pPlayer:ViewPunch( Angle( math.Rand(-3, -2.5), math.Rand(-7, -4.5), 0 ) )
 
 	self.Weapon:SetNextPrimaryFire( CurTime() + self:GetFireRate() );
 	self.Weapon:SetNextSecondaryFire( CurTime() + self.Weapon:SequenceDuration() );
@@ -144,6 +134,32 @@ function SWEP:GetDamageForActivity( hitActivity )
 	return nzRound:InProgress() and 30 + (45/nzRound:GetNumber()) or 75
 end
 
+//-----------------------------------------------------------------------------
+// Purpose: Add in a view kick for this weapon
+//-----------------------------------------------------------------------------
+function SWEP:AddViewKick()
+
+	local pPlayer  = self:GetOwner();
+
+	if ( pPlayer == NULL ) then
+		return;
+	end
+
+	if ( pPlayer:IsNPC() ) then
+		return;
+	end
+
+	local punchAng = Angle( 0, 0 ,0 );
+
+	punchAng.pitch = math.Rand( 1.0, 2.0 );
+	punchAng.yaw   = math.Rand( -2.0, -1.0 );
+	punchAng.roll  = 0.0;
+
+	pPlayer:ViewPunch( punchAng );
+
+end
+
+
 /*---------------------------------------------------------
    Name: SWEP:Deploy( )
    Desc: Whip it out
@@ -158,20 +174,16 @@ function SWEP:Deploy()
 end
 
 
+/*---------------------------------------------------------
+   Name: SWEP:Hit( )
+   Desc: A convenience function to trace impacts
+---------------------------------------------------------*/
 function SWEP:Hit( traceHit, pPlayer )
 
 	local vecSrc = pPlayer:GetShootPos();
 
 	if ( SERVER ) then
-		--pPlayer:TraceHullAttack( vecSrc, traceHit.HitPos, Vector( -5, -5, -5 ), Vector( 5, 5, 36 ), self:GetDamageForActivity(), self.Primary.DamageType, self.Primary.Force );
-		local dmg = DamageInfo()
-		dmg:SetAttacker(pPlayer)
-		dmg:SetInflictor(self)
-		dmg:SetDamage(self:GetDamageForActivity())
-		dmg:SetDamageType(self.Primary.DamageType)
-		dmg:SetDamageForce(self.Primary.Force * pPlayer:GetAimVector())
-		
-		traceHit.Entity:TakeDamageInfo(dmg)
+		pPlayer:TraceHullAttack( vecSrc, traceHit.HitPos, Vector( -5, -5, -5 ), Vector( 5, 5, 36 ), self:GetDamageForActivity(), self.Primary.DamageType, self.Primary.Force );
 	end
 
 	// self:AddViewKick();
@@ -179,20 +191,37 @@ function SWEP:Hit( traceHit, pPlayer )
 end
 
 
-
+/*---------------------------------------------------------
+   Name: SWEP:Swing( )
+   Desc: A convenience function to trace impacts
+---------------------------------------------------------*/
 function SWEP:Swing( traceHit, pPlayer )
 end
 
 
+/*---------------------------------------------------------
+   Name: SWEP:CanPrimaryAttack( )
+   Desc: Helper function for checking for no ammo
+---------------------------------------------------------*/
 function SWEP:CanPrimaryAttack()
 	return true
 end
 
 
+/*---------------------------------------------------------
+   Name: SWEP:CanSecondaryAttack( )
+   Desc: Helper function for checking for no ammo
+---------------------------------------------------------*/
 function SWEP:CanSecondaryAttack()
 	return false
 end
 
+
+/*---------------------------------------------------------
+   Name: SetDeploySpeed
+   Desc: Sets the weapon deploy speed.
+		 This value needs to match on client and server.
+---------------------------------------------------------*/
 function SWEP:SetDeploySpeed( speed )
 
 	self.m_WeaponDeploySpeed = tonumber( speed / GetConVarNumber( "phys_timescale" ) )
@@ -204,6 +233,9 @@ end
 
 
 
+//-----------------------------------------------------------------------------
+// Purpose:
+//-----------------------------------------------------------------------------
 function SWEP:Drop( vecVelocity )
 if ( !CLIENT ) then
 	self:Remove();
@@ -217,3 +249,4 @@ end
 function SWEP:GetFireRate()
 	return	self.Primary.Delay;
 end
+
