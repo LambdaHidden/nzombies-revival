@@ -68,7 +68,7 @@ function SWEP:Deploy()
 end
 
 function SWEP:PrimaryAttack()
-	self:ThrowGrenade(5500)
+	self:ThrowGrenade(6000) --5500
 end
 
 function SWEP:SecondaryAttack()
