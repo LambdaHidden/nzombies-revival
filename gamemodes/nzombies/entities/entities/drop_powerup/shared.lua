@@ -68,7 +68,7 @@ function ENT:Initialize()
 		self:OOBTest(nearest)
 	end
 	
-	timer.Simple(0.1, function()
+	timer.Simple(0, function()
 		if IsValid(self) then
 			self.PowerUpActive = true
 		end
