@@ -10,11 +10,12 @@ ENT.Instructions	= ""
 
 function ENT:SetupDataTables()
 	self:NetworkVar( "String", 0, "PowerUp" )
+	self:NetworkVar( "Bool", false, "PowerUpActive" )
 end
 
 function ENT:Initialize()
 
-	self.PowerUpActive = false
+	self:SetPowerUpActive(false)
 
 	--self:SetPowerUp("dp")
 	--self:SetModelScale(nzPowerUps:Get(self:GetPowerUp()).scale, 1)
@@ -64,20 +65,20 @@ function ENT:Initialize()
 	
 	local nearest = self:FindNearestPlayer(self:GetPos())
 	
-	if IsValid(nearest) then
+	if IsValid(nearest) and not self:GetPowerUpActive() then
 		self:OOBTest(nearest)
 	end
 	
 	timer.Simple(0, function()
 		if IsValid(self) then
-			self.PowerUpActive = true
+			self:SetPowerUpActive(true)
 		end
 	end)
 end
 
 if SERVER then
 	function ENT:StartTouch(hitEnt)
-		if not self.PowerUpActive then return end
+		if not self:GetPowerUpActive() then return end
 	
 		if (hitEnt:IsValid() and hitEnt:IsPlayer()) then
 			nzPowerUps:Activate(self:GetPowerUp(), hitEnt, self)
