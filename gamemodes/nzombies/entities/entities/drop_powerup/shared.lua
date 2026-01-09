@@ -79,8 +79,8 @@ if SERVER then
 	function ENT:Use(ply)
 		if not self.PowerUpActive then return end
 	
-		if ply:IsValid() and self:GetPressUse() then
-			nzPowerUps:Activate(self:GetPowerUp(), hitEnt, self)
+		if ply:IsValid() then
+			nzPowerUps:Activate(self:GetPowerUp(), ply, self)
 			self:StopSound( "power_up_loop" )
 			self:Remove()
 		end
@@ -89,7 +89,7 @@ if SERVER then
 	function ENT:StartTouch(hitEnt)
 		if not self.PowerUpActive then return end
 	
-		if (hitEnt:IsValid() and hitEnt:IsPlayer()) and not self:GetPressUse() then
+		if (hitEnt:IsValid() and hitEnt:IsPlayer()) then
 			nzPowerUps:Activate(self:GetPowerUp(), hitEnt, self)
 			self:StopSound( "power_up_loop" )
 			self:Remove()
