@@ -40,11 +40,13 @@ function PLAYER:Loadout()
 			self.Player:FAS2_PickUpAttachment(v.key)
 		end
 	end
-	self.Player:Give("nz_quickknife_crowbar")
+	--self.Player:Give("nz_quickknife_crowbar")
+	self.Player:Give("nz_knife")
 	
 	-- We need this to disable the grenades for those that it causes problems with until they've been remade :(
 	if !GetConVar("nz_failsafe_preventgrenades"):GetBool() then
-		self.Player:Give("nz_grenade")
+		--self.Player:Give("nz_grenade")
+		self.Player:Give("nz_grenade_nade")
 	end
 
 end
