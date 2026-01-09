@@ -81,23 +81,26 @@ function SWEP:PrimaryAttack()
 
 	if ( traceHit.Hit ) then
 
-		if math.random(0,1) == 0 and !self.Owner:KeyDown(IN_BACK) then
+		if math.random(0,1) == 0 then
 			self:SendWeaponAnim( ACT_VM_HITCENTER )
 			pPlayer:SetAnimation( PLAYER_ATTACK1 )
 			self.nzHolsterTime = CurTime() + 1
-			timer.Simple(0.1, function() self:EmitSound("nz/knife/knife_stab.wav") end)
+			self:EmitSound("nz/knife/knife_stab.wav")
+			--timer.Simple(0.1, function() self:EmitSound("nz/knife/knife_stab.wav") end)
 		else
 			self:SendWeaponAnim( ACT_VM_PRIMARYATTACK )
 			pPlayer:SetAnimation( PLAYER_ATTACK1 )
 			self.nzHolsterTime = CurTime() + 0.5
-			timer.Simple(0.1, function() self:EmitSound("nz/knife/knife_slash.wav") end)
+			self:EmitSound("nz/knife/knife_slash.wav")
+			--timer.Simple(0.1, function() self:EmitSound("nz/knife/knife_slash.wav") end)
 			--self.Owner:ViewPunch( Angle( math.Rand(-3, -2.5), math.Rand(-7, -4.5), 0 ) )
 		end
 
 		self.Weapon:SetNextPrimaryFire( CurTime() + self:GetFireRate() );
 		self.Weapon:SetNextSecondaryFire( CurTime() + self.Weapon:SequenceDuration() );
 
-		timer.Simple(0.1, function() self:Hit( traceHit, pPlayer ); end)
+		self:Hit( traceHit, pPlayer )
+		--timer.Simple(0.1, function() self:Hit( traceHit, pPlayer ); end)
 
 		return
 

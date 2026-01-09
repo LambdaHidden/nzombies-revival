@@ -86,7 +86,7 @@ function SWEP:ThrowGrenade(force)
 		nade:Activate()
 		nade:SetOwner(self.Owner)
 		
-		local throwdir = Vector(self.Owner:GetAimVector()[1],self.Owner:GetAimVector()[2],self.Owner:GetAimVector()[3]+0.2)
+		local throwdir = self.Owner:GetAimVector() --Vector(self.Owner:GetAimVector()[1],self.Owner:GetAimVector()[2],self.Owner:GetAimVector()[3]+0.2)
 		local nadePhys = nade:GetPhysicsObject()
 			if !IsValid(nadePhys) then return end
 		nadePhys:ApplyForceCenter(throwdir:GetNormalized() * force + self.Owner:GetVelocity())
