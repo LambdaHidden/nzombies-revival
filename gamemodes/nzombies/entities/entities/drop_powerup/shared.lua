@@ -14,6 +14,8 @@ end
 
 function ENT:Initialize()
 
+	self.PowerUpActive = false
+
 	--self:SetPowerUp("dp")
 	--self:SetModelScale(nzPowerUps:Get(self:GetPowerUp()).scale, 1)
 	
@@ -65,11 +67,29 @@ function ENT:Initialize()
 	if IsValid(nearest) then
 		self:OOBTest(nearest)
 	end
+	
+	timer.Simple(0.1, function()
+		if IsValid(self) then
+			self.PowerUpActive = true
+		end
+	end)
 end
 
 if SERVER then
+	function ENT:Use(ply)
+		if not self.PowerUpActive then return end
+	
+		if ply:IsValid() and self:GetPressUse() then
+			nzPowerUps:Activate(self:GetPowerUp(), hitEnt, self)
+			self:StopSound( "power_up_loop" )
+			self:Remove()
+		end
+	end
+
 	function ENT:StartTouch(hitEnt)
-		if (hitEnt:IsValid() and hitEnt:IsPlayer()) then
+		if not self.PowerUpActive then return end
+	
+		if (hitEnt:IsValid() and hitEnt:IsPlayer()) and not self:GetPressUse() then
 			nzPowerUps:Activate(self:GetPowerUp(), hitEnt, self)
 			self:StopSound( "power_up_loop" )
 			self:Remove()
