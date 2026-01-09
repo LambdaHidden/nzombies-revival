@@ -71,6 +71,7 @@ function ENT:Initialize()
 	timer.Simple(0, function()
 		if IsValid(self) then
 			self.PowerUpActive = true
+			self:SetSolid(SOLID_OBB)
 		end
 	end)
 end
