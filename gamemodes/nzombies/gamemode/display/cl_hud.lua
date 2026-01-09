@@ -454,7 +454,7 @@ local function StartChangeRound()
 						surface.PlaySound("#nzu/round/specialround_start.wav")
 						prevroundspecial = true
 					else
-						surface.PlaySound("#nzu/round/round_start.mp3")
+						surface.PlaySound("#nz/round/round_start.mp3")
 						prevroundspecial = false
 					end
 					haschanged = true
