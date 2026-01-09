@@ -148,9 +148,6 @@ function ENT:Initialize()
 	self:SetWalkSpeed( self.WalkSpeed ) --fallback
 
 	self:SetCollisionBounds(Vector(-16,-16, 0), Vector(16, 16, 70))
-	
-	self:SetSolidMask(MASK_NPCSOLID)
-	self:SetCollisionGroup(COLLISION_GROUP_NPC)
 
 	self:SetActStage(0)
 	self:SetSpecialAnimation(false)
