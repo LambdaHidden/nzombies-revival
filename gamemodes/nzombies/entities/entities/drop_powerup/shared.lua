@@ -23,6 +23,7 @@ function ENT:Initialize()
 	self:PhysicsInitSphere(60, "default_silent")
 	self:SetMoveType(MOVETYPE_NONE)
 	self:SetSolid(SOLID_NONE)
+	self:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
 	if SERVER then
 		self:SetTrigger(true)
 		self:SetUseType(SIMPLE_USE)
