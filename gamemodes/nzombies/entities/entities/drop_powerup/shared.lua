@@ -59,6 +59,12 @@ function ENT:Initialize()
 		privatePowerups = tempPrivate
 		globalPowerups = tempGlobal
 	end
+	
+	local nearest = self:FindNearestPlayer(self:GetPos())
+	
+	if IsValid(nearest) then
+		self:OOBTest(nearest)
+	end
 end
 
 if SERVER then
@@ -76,6 +82,120 @@ if SERVER then
 			self:Remove()
 		end
 	end
+end
+
+-- From nZR
+function ENT:OOBTest(ply)
+	if CLIENT then return end
+	if not IsValid(ply) then return end
+
+	local size = Vector(2, 2, 2)
+	local entpos = ply:WorldSpaceCenter()
+	local pos = self:WorldSpaceCenter()
+
+	local tr = util.TraceLine({
+		start = pos,
+		endpos = entpos,
+		filter = {self, ply},
+		mask = MASK_SOLID_BRUSHONLY
+	})
+
+	-- Check 1, trace to player, if interrupted by world, teleport infront of a barricade closest to player
+	if tr.HitWorld then
+		local barricade = self:FindNearestBarricade(entpos)
+		if barricade and IsValid(barricade) then
+			--print('Powerup1, Trace to player blocked by world')
+			local normal = (ply:GetPos() - barricade:GetPos()):GetNormalized()
+			local fwd = barricade:GetForward()
+			local dot = fwd:Dot(normal)
+
+			if 0 < dot then
+				self:SetPos(barricade:GetPos() + vector_up*5 + fwd*50)
+			else
+				self:SetPos(barricade:GetPos() + vector_up*5 + fwd*-50)
+			end
+			return
+		end
+	end
+
+	-- Check 2, raycast to player, if interrupted by a barricade, teleport infront of that barricade
+	for k, v in pairs(ents.FindAlongRay(pos, entpos, -size, size)) do
+		if v:GetClass() == "breakable_entry" then
+			--print('Powerup2, Barricade blocking raycast to player')
+			local normal = (ply:GetPos() - v:GetPos()):GetNormalized()
+			local fwd = v:GetForward()
+			local dot = fwd:Dot(normal)
+
+			if 0 < dot then
+				self:SetPos(v:GetPos() + vector_up*5 + fwd*50)
+			else
+				self:SetPos(v:GetPos() + vector_up*5 + fwd*-50)
+			end
+			return
+		end
+	end
+
+	-- Check 3, if theres a barricade next to us at all, place on side with player
+	for k, v in pairs(ents.FindInSphere(pos, 60)) do
+		if v:GetClass() == "breakable_entry" then
+			--print('Powerup3, Barricade too close')
+			local ply2 = self:FindNearestPlayer(v:GetPos())
+			if ply2 and IsValid(ply2) then
+				local normal = (self:GetPos() - v:GetPos()):GetNormalized()
+				local normal2 = (ply2:GetPos() - v:GetPos()):GetNormalized()
+				local fwd = v:GetForward()
+				local dot = fwd:Dot(normal)
+				local dot2 = fwd:Dot(normal2)
+
+				if 0 < dot2 and dot > 0 then
+					self:SetPos(v:GetPos() + vector_up*50 + fwd*50)
+				elseif 0 > dot2 and dot < 0 then
+					self:SetPos(v:GetPos() + vector_up*50 + fwd*-50)
+				end
+				return
+			end
+		end
+	end
+end
+
+-- From nZR
+function ENT:FindNearestPlayer(pos)
+	if not pos then
+		pos = self:GetPos()
+	end
+
+	local nearbyents = {}
+	for k, v in player.Iterator() do
+		if v:Alive() then
+			table.insert(nearbyents, v)
+		end
+	end
+
+	if table.IsEmpty(nearbyents) then return end
+	if #nearbyents > 1 then
+		table.sort(nearbyents, function(a, b) return tobool(a:GetPos():DistToSqr(pos) < b:GetPos():DistToSqr(pos)) end)
+	end
+	return nearbyents[1]
+end
+
+-- From nZR
+function ENT:FindNearestBarricade(pos)
+	if not pos then
+		pos = self:GetPos()
+	end
+
+	local nearbyents = {}
+	for k, v in pairs(ents.FindInSphere(pos, 2048)) do
+		if v:GetClass() == "breakable_entry" then
+			table.insert(nearbyents, v)
+		end
+	end
+
+	if table.IsEmpty(nearbyents) then return end
+	if #nearbyents > 1 then
+		table.sort(nearbyents, function(a, b) return tobool(a:GetPos():DistToSqr(pos) < b:GetPos():DistToSqr(pos)) end)
+	end
+	return nearbyents[1]
 end
 
 if CLIENT then
