@@ -1,12 +1,12 @@
 "nzombies"
 {
 	"base"		"base"
-    "title"  "nZombies"
+    "title"  "nZombies Revival"
     "version"   "4.0"
     "menusystem"	"1"
     "maps"	"^nz_"
 
-    "author_name"   "Alig96, Zet0r, Lolle"
+    "author_name"   "Alig96, Zet0r, Lolle, NNinja1255, Hidden, DJ_Nathan_, Global"
     "author_email"  ""
 
     "icon"  ""
