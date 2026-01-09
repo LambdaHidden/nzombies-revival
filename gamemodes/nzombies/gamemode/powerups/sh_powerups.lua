@@ -232,7 +232,7 @@ nzPowerUps:NewPowerUp("firesale", {
 	scale = 0.75,
 	chance = 1,
 	duration = 30,
-	announcement = "nzu/announcer/samantha/firesale.wav",
+	announcement = "nzu/announcer/samantha/powerups/firesale.wav",
 	func = (function(self, ply)
 		nzPowerUps:FireSale()
 	end),
