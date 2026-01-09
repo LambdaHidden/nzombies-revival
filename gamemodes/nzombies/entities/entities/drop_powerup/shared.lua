@@ -23,7 +23,6 @@ function ENT:Initialize()
 	self:PhysicsInitSphere(60, "default_silent")
 	self:SetMoveType(MOVETYPE_NONE)
 	self:SetSolid(SOLID_NONE)
-	self:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
 	if SERVER then
 		self:SetTrigger(true)
 		self:SetUseType(SIMPLE_USE)
@@ -72,22 +71,11 @@ function ENT:Initialize()
 	timer.Simple(0, function()
 		if IsValid(self) then
 			self.PowerUpActive = true
-			self:SetSolid(SOLID_OBB)
 		end
 	end)
 end
 
 if SERVER then
-	function ENT:Use(ply)
-		if not self.PowerUpActive then return end
-	
-		if ply:IsValid() then
-			nzPowerUps:Activate(self:GetPowerUp(), ply, self)
-			self:StopSound( "power_up_loop" )
-			self:Remove()
-		end
-	end
-
 	function ENT:StartTouch(hitEnt)
 		if not self.PowerUpActive then return end
 	
