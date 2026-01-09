@@ -10,7 +10,7 @@ ENT.Instructions	= ""
 
 function ENT:SetupDataTables()
 	self:NetworkVar( "String", 0, "PowerUp" )
-	self:NetworkVar( "Bool", false, "PowerUpActive" )
+	self:NetworkVar( "Bool", 1, "PowerUpActive" )
 end
 
 function ENT:Initialize()
