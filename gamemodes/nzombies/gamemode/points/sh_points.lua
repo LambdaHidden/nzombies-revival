@@ -47,7 +47,7 @@ if (SERVER) then
 		self:SetPoints(self:GetPoints() - amount)
 		
 		if !nosound then
-			self:EmitSound("nz/effects/buy.wav")
+			self:EmitSound("nzu/purchase/accept.wav")
 		end
 
 		-- If you have a clone like this, it tracks money spent which will be refunded on revival
