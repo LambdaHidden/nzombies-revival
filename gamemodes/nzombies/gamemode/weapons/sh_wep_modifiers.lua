@@ -588,7 +588,7 @@ nzWeps:AddWeaponModification("pap_tfa_attachments", "repap", cond, atts)
 
 if SERVER then
 	util.AddNetworkString("nzPaPCamo")
-	hook.Add("OnViewModelChanged", "nzPaPCamoUpdate", function(vm, old, new)
+	hook.Add("PreDrawViewModel", "nzPaPCamoUpdate", function(vm, old, new)
 		if IsValid(vm) and IsValid(vm:GetOwner()) then
 			--print(vm:GetOwner())
 			net.Start("nzPaPCamo")
@@ -626,6 +626,6 @@ if CLIENT then
 			end
 		end
 	end
-	hook.Add("OnViewModelChanged", "nzPaPCamoUpdate", PaPCamoUpdate)
+	hook.Add("PreDrawViewModel", "nzPaPCamoUpdate", PaPCamoUpdate)
 	net.Receive("nzPaPCamo", function() PaPCamoUpdate() end)
 end
