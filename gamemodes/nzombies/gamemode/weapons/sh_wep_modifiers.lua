@@ -609,14 +609,14 @@ if CLIENT then
 		if IsValid(view) then
 			view:SetSubMaterial()
 			if !GetConVar("nz_papcamo"):GetBool() then return end
+			if not wep.nzPaPCamo then
+				wep.nzPaPCamo = "models/props_combine/combine_monitorbay_disp"
+			end
 			if wep.PaPCamo then -- You can also use a function
 				wep:PaPCamo(view)
 			elseif wep.PaPMats2 then -- Will be generated if not defined in the weapon file
 				timer.Simple(0.01, function()
 					if wep and wep.PaPMats2 then
-						if wep.nzPaPCamo == nil then
-							wep.nzPaPCamo = "models/props_combine/combine_monitorbay_disp"
-						end
 						for k,v in pairs(wep.PaPMats2) do
 							view:SetSubMaterial(k, wep.nzPaPCamo)
 						end
