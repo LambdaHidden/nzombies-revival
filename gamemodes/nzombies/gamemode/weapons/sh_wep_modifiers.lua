@@ -535,6 +535,7 @@ end, function(wep)
 		wep.CanAttach = function()
 			return false
 		end
+		--[[
 		wep.SetTFAAttachment = function(cat, id, nw, force)
 			if ( not wep.Attachments[cat] ) then return false end
 			if id ~= wep.Attachments[cat].sel then
@@ -568,6 +569,7 @@ end, function(wep)
 			end
 			return true
 		end
+		]]
 	end
 end)
 
