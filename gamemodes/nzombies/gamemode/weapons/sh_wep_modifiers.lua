@@ -613,8 +613,14 @@ if CLIENT then
 				wep:PaPCamo(view)
 			elseif wep.PaPMats2 then -- Will be generated if not defined in the weapon file
 				timer.Simple(0.01, function()
-					for k,v in pairs(wep.PaPMats2) do
-						view:SetSubMaterial(k, "models/props_combine/combine_monitorbay_disp")
+					if wep and wep.PaPMats2 then
+						if wep.nzPaPCamo == nil then
+							wep.nzPaPCamo = "models/props_combine/combine_monitorbay_disp"
+						end
+						for k,v in pairs(wep.PaPMats2) do
+							view:SetSubMaterial(k, wep.nzPaPCamo)
+						end
+						
 					end
 				end)
 			end
