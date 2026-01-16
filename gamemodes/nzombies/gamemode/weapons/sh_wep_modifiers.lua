@@ -613,7 +613,7 @@ if CLIENT then
 			view:SetSubMaterial()
 			if !GetConVar("nz_papcamo"):GetBool() then return end
 			if not wep.nzPaPCamo then
-				wep.nzPaPCamo = "models/XQM/LightLinesRed_tool.vtf"
+				wep.nzPaPCamo = "models/XQM/LightLinesRed_tool"
 			end
 			if wep.PaPCamo then -- You can also use a function
 				wep:PaPCamo(view)
