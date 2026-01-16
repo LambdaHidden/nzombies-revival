@@ -545,7 +545,7 @@ end, function(wep)
 
 				local att_neue = TFA.Attachments[ wep.Attachments[cat].atts[ id ] or -1 ]
 				if att_neue then
-					tt_neue:Attach( wep )
+					att_neue:Attach( wep )
 				end
 			end
 			wep:ClearStatCache()
