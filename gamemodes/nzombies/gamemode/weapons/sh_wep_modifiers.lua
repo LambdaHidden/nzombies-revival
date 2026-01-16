@@ -528,6 +528,8 @@ end, function(wep)
 	end
 end)
 
+-- Allow TFA attachments since CW2 and FAS2 allow attachments.
+--[[
 nzWeps:AddWeaponModification("tfa_attachmentmod", "equip", function(wep)
 	return wep:IsTFA()
 end, function(wep)
@@ -535,7 +537,6 @@ end, function(wep)
 		wep.CanAttach = function()
 			return false
 		end
-		--[[
 		wep.SetTFAAttachment = function(cat, id, nw, force)
 			if ( not wep.Attachments[cat] ) then return false end
 			if id ~= wep.Attachments[cat].sel then
@@ -569,9 +570,9 @@ end, function(wep)
 			end
 			return true
 		end
-		]]
 	end
 end)
+]]
 
 local cond = function(wep) return SERVER and wep:IsTFA() and GetConVar("nz_papattachments"):GetBool() end
 local atts = function(wep)
