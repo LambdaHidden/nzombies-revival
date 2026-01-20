@@ -351,7 +351,16 @@ if CLIENT then
 			if win then
 				surface.PlaySound(GetGlobalString("winmusic", "nz/easteregg/motd_standard.wav"))
 			else
-				surface.PlaySound(GetGlobalString("losemusic", "nz/round/game_over_4.mp3"))
+				if GetConVar("nz_gameover_music"):GetInt() == 2 then
+					-- Kino Der Toten (BO1)
+					surface.PlaySound(GetGlobalString("losemusic", "nz/round/game_over_5.mp3"))
+				elseif GetConVar("nz_gameover_music"):GetInt() == 3 then
+					-- The Giant (BO3)
+					surface.PlaySound(GetGlobalString("losemusic", "nz/round/game_over_-1.mp3"))
+				else
+					-- Der Riese (WaW)
+					surface.PlaySound(GetGlobalString("losemusic", "nz/round/game_over_4.mp3"))
+				end
 			end
 		end
 	end

@@ -401,7 +401,16 @@ function nzRound:End()
 				net.WriteBool(false)
 			net.Broadcast()
 		end
+	else
+		net.Start("nzMajorEEEndScreen")
+			net.WriteBool(false)
+			net.WriteBool(false)
+			net.WriteString("You survived "..self:GetNumber().." rounds.")
+			net.WriteFloat(10)
+			net.WriteBool(false)
+		net.Broadcast()
 	end
+	
 	if GetConVar("nz_gameover_music"):GetInt() == 2 then
 		-- Kino Der Toten (BO1)
 		nzNotifications:PlaySound("nz/round/game_over_5.mp3", 21)
