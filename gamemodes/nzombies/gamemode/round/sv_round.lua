@@ -1,3 +1,7 @@
+if not ConVarExists("nz_gameover_music") then 
+	CreateConVar("nz_gameover_music", 1, {FCVAR_SERVER_CAN_EXECUTE, FCVAR_REPLICATED}, "What music to play on game over: 1 = Der Riese (WaW), 2 = Kino Der Toten (BO1), 3 = The Giant (BO3)")
+end
+
 function GM:InitPostEntity()
 
 	nzRound:Waiting()
@@ -397,10 +401,15 @@ function nzRound:End()
 				net.WriteBool(false)
 			net.Broadcast()
 		end
-		nzNotifications:PlaySound("nz/round/game_over_-1.mp3", 21)
-	elseif nzMapping.OfficialConfig then
+	end
+	if GetConVar("nz_gameover_music"):GetInt() == 2 then
+		-- Kino Der Toten (BO1)
 		nzNotifications:PlaySound("nz/round/game_over_5.mp3", 21)
+	elseif GetConVar("nz_gameover_music"):GetInt() == 3 then
+		-- The Giant (BO3)
+		nzNotifications:PlaySound("nz/round/game_over_-1.mp3", 21)
 	else
+		-- Der Riese (WaW)
 		nzNotifications:PlaySound("nz/round/game_over_4.mp3", 21)
 	end
 	
