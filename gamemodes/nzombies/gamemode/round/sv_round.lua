@@ -405,7 +405,7 @@ function nzRound:End()
 		net.Start("nzMajorEEEndScreen")
 			net.WriteBool(false)
 			net.WriteBool(false)
-			net.WriteString("You survived "..self:GetNumber().." rounds.")
+			net.WriteString("You survived "..self:GetNumber().." "..(self:GetNumber() == 1 and "round" or "rounds"))
 			net.WriteFloat(10)
 			net.WriteBool(false)
 		net.Broadcast()
@@ -430,7 +430,7 @@ function nzRound:End()
 end
 
 function nzRound:Win(message, keepplaying, time, noautocam, camstart, camend)
-	if !message then message = "You survived after " .. self:GetNumber() .. " rounds!" end
+	if !message then message = "You survived after " .. self:GetNumber() .. " " .. (self:GetNumber() == 1 and "round" or "rounds") .. "!" end
 	local time = time or 10
 	
 	if not noautocam then
@@ -485,7 +485,7 @@ function nzRound:Win(message, keepplaying, time, noautocam, camstart, camend)
 end
 
 function nzRound:Lose(message, time, noautocam, camstart, camend)
-	if !message then message = "You got overwhelmed after " .. self:GetNumber() .. " rounds!" end
+	if !message then message = "You got overwhelmed after " .. self:GetNumber() .. " " .. (self:GetNumber() == 1 and "round" or "rounds") .. "!" end
 	local time = time or 10
 	
 	if not noautocam then
