@@ -385,14 +385,6 @@ function GM:ScoreboardHide()
 
 end
 
-net.Receive("nZGameOverScoreboard_Show", function()
-    hook.Run("ScoreboardShow")
-end)
-
-net.Receive("nZGameOverScoreboard_Hide", function()
-    hook.Run("ScoreboardHide")
-end)
-
 --[[---------------------------------------------------------
 	Name: gamemode:HUDDrawScoreBoard( )
 	Desc: If you prefer to draw your scoreboard the stupid way (without vgui)
