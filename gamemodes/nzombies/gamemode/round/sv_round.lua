@@ -2,7 +2,7 @@ util.AddNetworkString("nZGameOverScoreboard_Show")
 util.AddNetworkString("nZGameOverScoreboard_Hide")
 
 if not ConVarExists("nz_gameover_music") then 
-	CreateConVar("nz_gameover_music", 1, {FCVAR_SERVER_CAN_EXECUTE, FCVAR_REPLICATED}, "What music to play on game over: 1 = Der Riese (WaW), 2 = Kino Der Toten (BO1), 3 = The Giant (BO3)")
+	CreateConVar("nz_gameover_music", 1, {FCVAR_SERVER_CAN_EXECUTE, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "What music to play on game over: 1 = Der Riese (WaW), 2 = Kino Der Toten (BO1), 3 = The Giant (BO3)")
 end
 
 function GM:InitPostEntity()
