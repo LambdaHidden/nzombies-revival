@@ -16,7 +16,17 @@ local bloodline_gun = Material("cod_hud.png", "unlitgeneric smooth")
 	nil
 }]]
 
-CreateClientConVar( "nz_hud_points_show_names", "1", true, false )
+if GetConVar("nz_hud_points_show_names") == nil then
+	CreateClientConVar( "nz_hud_points_show_names", "1", true, false )
+end
+
+if GetConVar("nz_hud_show_health") == nil then
+	CreateClientConVar( "nz_hud_show_health", "1", true, false )
+end
+
+if GetConVar("nz_hud_show_health_mp") == nil then
+	CreateClientConVar( "nz_hud_show_health_mp", "0", true, false )
+end
 
 local function StatesHud()
 	if GetConVar("cl_drawhud"):GetBool() then
@@ -58,7 +68,11 @@ local function ScoreHud()
 						else
 							nick = v:Nick()
 						end
-						text = nick
+						if GetConVar("nz_hud_show_health"):GetBool() && (GetConVar("nz_hud_show_health_mp"):GetBool() or LocalPlayer() == v) then
+							text = nick .. " (" .. hp ..  ")"
+						else
+							text = nick
+						end
 						nameoffset = 10
 					end
 
