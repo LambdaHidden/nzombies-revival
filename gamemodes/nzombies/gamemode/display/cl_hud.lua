@@ -56,7 +56,9 @@ local function ScoreHud()
 
 			for k,v in pairs(player.GetAll()) do
 				local hp = v:Health()
-				if hp == 0 then hp = "Dead" elseif nzRevive.Players[v:EntIndex()] then hp = "Downed" else hp = hp .. " HP"  end
+				local maxhp = v:GetMaxHealth()
+				local hpscale = math.Clamp(hp / maxhp, 0, 1)
+				--if hp == 0 then hp = "Dead" elseif nzRevive.Players[v:EntIndex()] then hp = "Downed" else hp = hp .. " HP"  end
 				if v:GetPoints() >= 0 then
 
 					local text = ""
@@ -68,11 +70,7 @@ local function ScoreHud()
 						else
 							nick = v:Nick()
 						end
-						if GetConVar("nz_hud_show_health"):GetBool() && (GetConVar("nz_hud_show_health_mp"):GetBool() or LocalPlayer() == v) then
-							text = nick .. " (" .. hp ..  ")"
-						else
-							text = nick
-						end
+						text = nick
 						nameoffset = 10
 					end
 
@@ -88,14 +86,32 @@ local function ScoreHud()
 						offset = offset + textH
 					end
 
-					surface.SetDrawColor(200,200,200)
+					--surface.SetDrawColor(200,200,200)
 					local index = v:EntIndex()
 					local color = player.GetColorByIndex(v:EntIndex())
 					local blood = player.GetBloodByIndex(v:EntIndex())
 					--for i = 0, 8 do
 						--surface.SetMaterial(bloodDecals[((index + i - 1) % #bloodDecals) + 1 ])
 						surface.SetMaterial(blood)
-						surface.DrawTexturedRect(ScrW() - textW - 180, ScrH() - 275 * scale - offset, textW + 150, 45)
+						if GetConVar("nz_hud_show_health"):GetBool() and (GetConVar("nz_hud_show_health_mp"):GetBool() or LocalPlayer() == v) then
+							if hp == 0 or nzRevive.Players[v:EntIndex()] then
+								surface.SetDrawColor(0,0,0)
+							else
+								surface.SetDrawColor(100,100,100)
+							end
+							surface.DrawTexturedRect(ScrW() - textW - 180, ScrH() - 275 * scale - offset, textW + 150, 45)
+							if hp ~= 0 then
+								if nzRevive.Players[v:EntIndex()] then
+									surface.SetDrawColor(100,100,100)
+								else
+									surface.SetDrawColor(200,200,200)
+								end
+								surface.DrawTexturedRect(ScrW() - textW - 180, ScrH() - 275 * scale - offset, (textW + 150)*hpscale, 45)
+							end
+						else
+							surface.SetDrawColor(200,200,200)
+							surface.DrawTexturedRect(ScrW() - textW - 180, ScrH() - 275 * scale - offset, textW + 150, 45)
+						end
 					--end
 					--surface.DrawTexturedRect(ScrW() - 325*scale - numname * 10, ScrH() - 285*scale - (30*k), 250 + numname*10, 35)
 					if text then draw.SimpleText(text, font, ScrW() - textW - 60, ScrH() - 255 * scale - offset, color, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER) end

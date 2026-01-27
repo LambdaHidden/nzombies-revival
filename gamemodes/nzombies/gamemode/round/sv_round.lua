@@ -1,3 +1,6 @@
+util.AddNetworkString("nZGameOverScoreboard_Show")
+util.AddNetworkString("nZGameOverScoreboard_Hide")
+
 if not ConVarExists("nz_gameover_music") then 
 	CreateConVar("nz_gameover_music", 1, {FCVAR_SERVER_CAN_EXECUTE, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "What music to play on game over: 1 = Der Riese (WaW), 2 = Kino Der Toten (BO1), 3 = The Giant (BO3)")
 end
@@ -411,6 +414,13 @@ function nzRound:End()
 		net.Broadcast()
 	end
 	
+	--[[
+	timer.Simple(3, function()
+		net.Start("nZGameOverScoreboard_Show")
+		net.Broadcast()
+	end)
+	]]
+	
 	if GetConVar("nz_gameover_music"):GetInt() == 2 then
 		-- Kino Der Toten (BO1)
 		nzNotifications:PlaySound("nz/round/game_over_5.mp3", 21)
@@ -424,6 +434,8 @@ function nzRound:End()
 	
 	timer.Simple(10, function()
 		self:ResetGame()
+		--net.Start("nZGameOverScoreboard_Hide")
+		--net.Broadcast()
 	end)
 
 	hook.Call( "OnRoundEnd", nzRound )
