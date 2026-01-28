@@ -1220,7 +1220,7 @@ end
 
 function ENT:Kill(dmginfo, noprogress, noragdoll)
 	local dmg = dmginfo or DamageInfo()
-	if noragdoll then
+	if noragdoll or bit.band(dmginfo:GetDamageType(), DMG_REMOVENORAGDOLL) then
 		self:Fire("Kill",0,0)
 	else
 		self:BecomeRagdoll(dmg)
