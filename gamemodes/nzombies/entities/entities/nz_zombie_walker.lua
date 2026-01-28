@@ -254,10 +254,17 @@ function ENT:OnSpawn()
 end
 
 function ENT:OnZombieDeath(dmgInfo)
-
-	if dmgInfo:GetDamageType() == DMG_SHOCK then
+	local dmg = dmgInfo or DamageInfo()
+	local dmgtype = dmg:GetDamageType()
+	
+	if bit.band(dmgtype, DMG_REMOVENORAGDOLL) > 0 then
+		self:Fire("Kill",0,0)
+	elseif bit.band(dmgtype, DMG_DISSOLVE) > 0 then
+		self:Dissolve(0, 0)
+		self:BecomeRagdoll(dmg) -- will this work?
+	elseif bit.band(dmgtype, DMG_SHOCK) > 0 then
 		self:SetRunSpeed(0)
-		self.loco:SetVelocity(Vector(0,0,0))
+		self.loco:SetVelocity(vector_origin)
 		self:Stop()
 		self:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
 		local seq, dur = self:LookupSequence(self.ElectrocutionSequences[math.random(#self.ElectrocutionSequences)])
@@ -272,7 +279,7 @@ function ENT:OnZombieDeath(dmgInfo)
 		end)
 	else
 		self:EmitSound( self.DeathSounds[ math.random( #self.DeathSounds ) ], 100)
-		self:BecomeRagdoll(dmgInfo)
+		self:BecomeRagdoll(dmg)
 	end
 
 end
