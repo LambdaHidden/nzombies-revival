@@ -1219,17 +1219,21 @@ function ENT:Explode(dmg, suicide)
 end
 
 function ENT:Kill(dmginfo, noprogress, noragdoll)
-	local dmg = dmginfo or DamageInfo()
-	if noragdoll or bit.band(dmginfo:GetDamageType(), DMG_REMOVENORAGDOLL) then
-		self:Fire("Kill",0,0)
-	else
-		self:BecomeRagdoll(dmg)
-	end
-	if !noprogress then
-		nzEnemies:OnEnemyKilled(self, dmg:GetAttacker(), dmg, 0)
-	end
-	self:OnKilled(dmg)
-	--self:TakeDamage( 10000, self, self )
+    local dmg = dmginfo or DamageInfo()
+    local dmgtype = dmg:GetDamageType()
+    
+    if noragdoll or bit.band(dmgtype, DMG_REMOVENORAGDOLL) then
+        self:Fire("Kill",0,0)
+    elseif bit.band(dmgtype, DMG_DISSOLVE) then
+        self:Dissolve( 0, 0 )
+    else
+        self:BecomeRagdoll(dmg)
+    end
+    if !noprogress then
+        nzEnemies:OnEnemyKilled(self, dmg:GetAttacker(), dmg, 0)
+    end
+    self:OnKilled(dmg)
+    --self:TakeDamage( 10000, self, self )
 end
 
 function ENT:RespawnZombie()
