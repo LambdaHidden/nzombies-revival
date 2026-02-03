@@ -49,6 +49,7 @@ SWEP.NZSpecialCategory = "shield" -- This makes it count as special, as well as 
 -- Since this is a unique ID, it won't replace any other special weapon and it won't be selectable, so we call this function:
 
 nzSpecialWeapons:RegisterSpecialWeaponCategory("shield", KEY_N) -- This also adds a convar to rebind (with that default)
+SWEP.NZSpecialWeaponData = {MaxAmmo = 0, AmmoType = "none"}
 
 function SWEP:NZSpecialHolster(wep)
 	return true -- This lets us always holster it even though it is a special weapon
