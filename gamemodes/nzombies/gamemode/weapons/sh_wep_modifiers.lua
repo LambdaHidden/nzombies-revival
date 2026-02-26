@@ -146,22 +146,26 @@ local wepmeta = FindMetaTable("Weapon")
 if !wepmeta then return end
 
 local function RecursiveDifferenceCheck(tbl1, tbl2)
-	local diffs = {}
-	
-	for k,v in pairs(tbl1) do
-		if v != tbl2[k] then
-			if type(v) == "table" then
-				local t = RecursiveDifferenceCheck(v, tbl2[k])
-				if table.Count(t) > 0 then
-					diffs[k] = t
-				end
-			else
-				diffs[k] = v
-			end
-		end
-	end
-	
-	return diffs
+    local diffs = {}
+    
+    if !tbl2 then
+        return diffs
+    end
+    
+    for k,v in pairs(tbl1) do
+        if v != tbl2[k] then
+            if type(v) == "table" then
+                local t = RecursiveDifferenceCheck(v, tbl2[k])
+                if table.Count(t) > 0 then
+                    diffs[k] = t
+                end
+            else
+                diffs[k] = v
+            end
+        end
+    end
+    
+    return diffs
 end
 
 function wepmeta:ApplyDefaultNZModifier(modifier)
