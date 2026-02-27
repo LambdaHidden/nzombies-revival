@@ -76,7 +76,7 @@ if SERVER then
 			}
 			local tbl = {}
 			for k,v in pairs(available) do
-				if !p:HasPerk(k) and !blockedperks[k] then
+				if !hitEnt:HasPerk(k) and !blockedperks[k] then
 					table.insert(tbl, k)
 				end
 			end
