@@ -1,5 +1,3 @@
-AddCSLuaFile()
-
 ENT.Base = "base_nextbot"
 ENT.PrintName = "Faked downed player"
 ENT.Category = "Brainz"
@@ -7,9 +5,14 @@ ENT.Author = "Lolle & Zet0r"
 
 function ENT:Initialize()
     --change those after creation
-    self:SetModel( "models/player/kleiner.mdl" )
+    --self:SetModel( "models/player/kleiner.mdl" )
+	local perkown = self:GetPerkOwner()
+	self:SetModel( perkown and perkown:GetModel() or "models/player/kleiner.mdl" )
 	self.OwnerData = {}
-    if SERVER then self:GiveWeapon( "weapon_pistol" ) end
+	self.OldPerks = {}
+    if SERVER then 
+		self:GiveWeapon( "weapon_pistol" ) 
+	end
 end
 
 function ENT:SetupDataTables()
@@ -69,8 +72,7 @@ end
 
 function ENT:RevivePlayer()
 	local ply = self:GetPerkOwner()
-	print(self:GetPerkOwner())
-	PrintTable(self.OwnerData)
+	--PrintTable(self.OwnerData)
 	
 	if (IsValid(ply) and ply:IsPlayer()) then
 		if ply:Alive() then
@@ -85,29 +87,61 @@ function ENT:RevivePlayer()
 		ply:SetEyeAngles(self:GetAngles())
 		
 		-- Yeah no, Who's Who doesn't actually let you keep your clone's perks or weapons
+		if ply:GetNW2Bool("IsInAfterlife") then
+			--ply:GetWeapon("weapon_afterlife"):GiveAbilities(false)
+			hook.Run("PlayerLeftAfterlife", ply)
+			ply:EmitSound("motd/afterlife/afterlife_end.ogg")
+		end
 		ply:RemovePerks()
-		ply:StripWeapons()
+		ply:StripWeapon("weapon_afterlife")
+		--ply:StripWeapons()
+		if IsValid(nzPowerUps.ActivePlayerPowerUps[ply]) then
+			if !nzPowerUps:IsPlayerPowerupActive(ply, "zombieblood") then
+				ply:SetTargetPriority(TARGET_PRIORITY_PLAYER)
+			end
+		else
+			ply:SetTargetPriority(TARGET_PRIORITY_PLAYER)
+		end
 		
-		for k,v in pairs(self.OwnerData.weps) do
+		local hasammodata = false
+		local tbl = self.OwnerData.weps or ply.OldWeps
+		for k,v in pairs(tbl) do
 			local wep = ply:Give(v.class)
+			if !IsValid(wep) then continue end
+			if v.ammo1 != nil then
+				ply:SetAmmo(v.ammo1, wep.Primary.Ammo)
+				ply:SetAmmo(v.ammo2, wep.Secondary.Ammo)
+				wep:SetClip1(v.clip1)
+				wep:SetClip2(v.clip2)
+				hasammodata = true
+			end
 			if v.pap then
-				timer.Simple(0, function()
-					if IsValid(wep) then
-						wep:ApplyNZModifier("pap")
-					end
-				end)
+				if wep.OnPaP then
+					wep:OnPaP()
+					continue
+				end
+				wep:ApplyNZModifier("pap")
 			end
 		end
-		for k,v in pairs(self.OwnerData.perks) do
-			if v != "whoswho" then
-				ply:GivePerk(v)
+		if !hasammodata then ply:GiveMaxAmmo() end
+		
+		if ply:GetNW2Bool("HasDiedFromSwitchbox") or ply.WhosWhoClone then
+			for k,v in pairs(self.OwnerData.perks) do
+				if v != "whoswho" then
+					ply:GivePerk(v)
+				end
 			end
+			ply:SetNW2Bool("HasDiedFromSwitchbox", false)
+			ply:SetTotalDowns(ply:GetTotalDowns() - 1)
 		end
-		ply:GiveMaxAmmo()
+		ply:SetNW2Bool("SilentAfterlifeTransition", false)
 	end
 	
 	-- Everything bought as the clone will be refunded, even doors
-	ply:GivePoints(ply.WhosWhoMoney)
+	ply:GivePoints(ply.WhosWhoMoney or ply.AfterlifeMoney)
+	if self.OwnerData.afterlives then
+		ply:SetNW2Int("Afterlives", self.OwnerData.afterlives)
+	end
 	
 	local revivor = nzRevive.Players[id] and nzRevive.Players[id].RevivePlayer or nil
 	if IsValid(revivor) and revivor:IsPlayer() then
@@ -124,7 +158,7 @@ function ENT:StartRevive(revivor, nosync)
 	local id = self:EntIndex()
 	if !nzRevive.Players[id] then return end -- Not even downed
 	if nzRevive.Players[id].ReviveTime then return end -- Already being revived
-		
+	
 	nzRevive.Players[id].ReviveTime = CurTime()
 	nzRevive.Players[id].RevivePlayer = revivor
 	revivor.Reviving = self
@@ -150,7 +184,13 @@ function ENT:StopRevive(nosync)
 end
 
 function ENT:KillDownedPlayer()
-	self:Remove()
+	local ply = self:GetPerkOwner()
+	self:RevivePlayer()
+	
+	timer.Simple(0.1, function()
+		ply:SetNW2Int("Afterlives", 0)
+		ply:TakeDamage(ply:Health()+1)
+	end)
 end
 
 function ENT:OnRemove()
