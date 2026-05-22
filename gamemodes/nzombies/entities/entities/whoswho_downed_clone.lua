@@ -7,7 +7,7 @@ function ENT:Initialize()
     --change those after creation
     --self:SetModel( "models/player/kleiner.mdl" )
 	local perkown = self:GetPerkOwner()
-	self:SetModel( perkown and perkown:GetModel() or "models/player/kleiner.mdl" )
+	self:SetModel( IsValid(perkown) and perkown:GetModel() or "models/player/kleiner.mdl" )
 	self.OwnerData = {}
 	self.OldPerks = {}
     if SERVER then 
@@ -46,11 +46,13 @@ function ENT:GiveWeapon( wepclass )
     end
     self.Weapon:SetOwner(self)
     self.Weapon:SetParent(self)
-    self.Weapon:SetPos( self:GetAttachment(self:LookupAttachment("anim_attachment_RH")).Pos )
+    --self.Weapon:SetPos( self:GetAttachment(self:LookupAttachment("anim_attachment_RH")).Pos )
+	self.Weapon:SetPos( self:GetPos() )
     self.Weapon:Spawn()
     self.Weapon:SetSolid(SOLID_NONE)
+    self.Weapon:SetMoveType(MOVETYPE_NONE)
     self.Weapon:AddEffects(EF_BONEMERGE)
-    self.Weapon:Fire( "SetParentAttachment", "anim_attachment_LH" )
+    self.Weapon:Fire( "SetParentAttachment", "anim_attachment_RH" )
 
 end
 
