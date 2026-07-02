@@ -14,7 +14,9 @@ hook.Add( "Think", "RegenHealth", function()
 	end
 end )
 
-hook.Add( "EntityTakeDamage", "PreventHealthRegen", function(ent, dmginfo)
+hook.Add( "PostEntityTakeDamage", "PreventHealthRegen", function(ent, dmginfo, tookdamage)
+	if !tookdamage then return end
+	
 	if ent:IsPlayer() and ent:GetNotDowned() then
 		ent.lasthit = CurTime()
 	end
