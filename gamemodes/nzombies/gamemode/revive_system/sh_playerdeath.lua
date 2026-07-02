@@ -39,6 +39,6 @@ local function HandleKillCommand(ply)
 end
 
 -- Hooks
-hook.Add("EntityTakeDamage", "nzDownKilledPlayers", nzRevive.DoPlayerDeath)
+hook.Add("PostEntityTakeDamage", "nzDownKilledPlayers", nzRevive.DoPlayerDeath)
 hook.Add("PostPlayerDeath", "nzPlayerDeathRevivalReset", nzRevive.PostPlayerDeath)
 hook.Add("CanPlayerSuicide", "nzSuicideDowning", HandleKillCommand)
