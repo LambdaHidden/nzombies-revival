@@ -1,5 +1,5 @@
-
-function nzRevive.DoPlayerDeath(ply, dmg)
+-- Backup of the old function, just in case we need it again.
+--[[function nzRevive.DoPlayerDeath(ply, dmg)
 
 	if IsValid(ply) and ply:IsPlayer() then
 		if ply:Health() - dmg:GetDamage() <= 0 then
@@ -20,6 +20,50 @@ function nzRevive.DoPlayerDeath(ply, dmg)
 		end
 	end
 	
+end]]
+
+-- If we take fatal damage, wait until all damage modifying hooks do their thing before downing us,
+-- one might nerf it enough for us to survive.
+function nzRevive.PrePlayerDown(ply, dmg)
+
+	if !IsValid(ply) or !ply:IsPlayer() then return end
+	
+	if ply:Health() <= dmg:GetDamage() then
+		local allow = hook.Call("PlayerShouldTakeDamage", nil, ply, dmg:GetAttacker())
+		
+		if allow != false then -- Only false should prevent it (not nil)
+		
+			print( "checking for potentially fatal damage for " .. ply:Nick() )
+			ply.OriginalDownDMG = dmg:GetDamage()
+			ply:SetHealth( ply:Health() + ply.OriginalDownDMG )
+			
+		end
+		
+	elseif !ply:GetNotDowned() then
+		return true -- Downed players cannot take non-fatal damage
+	end
+	
+end
+
+function nzRevive.DoPlayerDeath(ply, dmg, took)
+
+	if !took then return end
+	if !IsValid(ply) or !ply:IsPlayer() then return end
+	if !ply.OriginalDownDMG then return end
+	
+	if dmg:GetDamage() >= ply:Health() - ply.OriginalDownDMG then
+		if ply:GetNotDowned() then
+			print(ply:Nick() .. " got downed!")
+			ply:DownPlayer()
+		else
+			ply:KillDownedPlayer() -- Kill them if they are already downed
+		end
+	else
+		ply:SetHealth(ply:Health() - ply.OriginalDownDMG)
+	end
+	
+	ply.OriginalDownDMG = nil
+	
 end
 
 function nzRevive.PostPlayerDeath(ply)
@@ -39,6 +83,7 @@ local function HandleKillCommand(ply)
 end
 
 -- Hooks
+hook.Add("EntityTakeDamage", "nzPrePlayerDown", nzRevive.PrePlayerDown)
 hook.Add("PostEntityTakeDamage", "nzDownKilledPlayers", nzRevive.DoPlayerDeath)
 hook.Add("PostPlayerDeath", "nzPlayerDeathRevivalReset", nzRevive.PostPlayerDeath)
 hook.Add("CanPlayerSuicide", "nzSuicideDowning", HandleKillCommand)
