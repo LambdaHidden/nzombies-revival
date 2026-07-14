@@ -35,6 +35,7 @@ function nzRevive.PrePlayerDown(ply, dmg)
 		
 			print( "checking for potentially fatal damage for " .. ply:Nick() )
 			ply.OriginalDownDMG = dmg:GetDamage()
+			ply.OriginalDownHealth = ply:Health()
 			ply:SetHealth( ply:Health() + ply.OriginalDownDMG )
 			
 		end
@@ -51,7 +52,7 @@ function nzRevive.DoPlayerDeath(ply, dmg, took)
 	if !IsValid(ply) or !ply:IsPlayer() then return end
 	if !ply.OriginalDownDMG then return end
 	
-	if dmg:GetDamage() >= ply:Health() - ply.OriginalDownDMG then
+	if dmg:GetDamage() >= ply.OriginalDownHealth then
 		if ply:GetNotDowned() then
 			print(ply:Nick() .. " got downed!")
 			ply:DownPlayer()
@@ -63,6 +64,7 @@ function nzRevive.DoPlayerDeath(ply, dmg, took)
 	end
 	
 	ply.OriginalDownDMG = nil
+	ply.OriginalDownHealth = nil
 	
 end
 
