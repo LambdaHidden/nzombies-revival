@@ -3,6 +3,9 @@ AddCSLuaFile()
 --debug cvars
 CreateConVar( "nz_zombie_debug", "0", { FCVAR_REPLICATED, FCVAR_ARCHIVE, FCVAR_CHEAT } )
 
+local debugEnabled = false
+cvars.AddChangeCallback( "nz_zombie_debug", function(cvar, old, new) debugEnabled = tobool(new) end )
+
 --[[
 This Base is not really spawnable but it contains a lot of useful functions for it's children
 --]]
@@ -183,7 +186,7 @@ function ENT:SpecialInit()
 	--print("PLEASE Override the base class!")
 end
 
-function ENT:StatsInit()
+function ENT:StatsInitialize()
 	--print("PLEASE Override the base class!")
 end
 
@@ -301,30 +304,30 @@ function ENT:Think()
 end
 
 function ENT:DebugThink()
-	if GetConVar( "nz_zombie_debug" ):GetBool() then
-		local spacing = Vector(0,0,64)
-		local target = self:GetTarget()
-		if target then
-			debugoverlay.Text( self:GetPos() + spacing, tostring(target), FrameTime() * 2 )
-		else
-			debugoverlay.Text( self:GetPos() + spacing, "NO_TARGET", FrameTime() * 2 )
-		end
-		spacing = spacing + Vector(0,0,8)
-		local attacking = self:IsAttacking()
-		if attacking then
-			debugoverlay.Text( self:GetPos() + spacing, "IN_ATTACK", FrameTime() * 2 )
-		elseif self:IsTimedOut() then
-			debugoverlay.Text( self:GetPos() + spacing, "TIMED_OUT", FrameTime() * 2 )
-		elseif target then
-			debugoverlay.Text( self:GetPos() + spacing, "MOVING_TO_TARGET", FrameTime() * 2 )
-		else
-			debugoverlay.Text( self:GetPos() + spacing, "ERROR", FrameTime() * 2 )
-		end
-		spacing = spacing + Vector(0,0,8)
-		debugoverlay.Text( self:GetPos() + spacing, "HitPoints: " .. tostring(self:Health()), FrameTime() * 2 )
-		spacing = spacing + Vector(0,0,8)
-		debugoverlay.Text( self:GetPos() + spacing, tostring(self), FrameTime() * 2 )
+	if !debugEnabled then return end
+	
+	local spacing = Vector(0,0,64)
+	local target = self:GetTarget()
+	if target then
+		debugoverlay.Text( self:GetPos() + spacing, tostring(target), FrameTime() * 2 )
+	else
+		debugoverlay.Text( self:GetPos() + spacing, "NO_TARGET", FrameTime() * 2 )
 	end
+	spacing = spacing + Vector(0,0,8)
+	local attacking = self:IsAttacking()
+	if attacking then
+		debugoverlay.Text( self:GetPos() + spacing, "IN_ATTACK", FrameTime() * 2 )
+	elseif self:IsTimedOut() then
+		debugoverlay.Text( self:GetPos() + spacing, "TIMED_OUT", FrameTime() * 2 )
+	elseif target then
+		debugoverlay.Text( self:GetPos() + spacing, "MOVING_TO_TARGET", FrameTime() * 2 )
+	else
+		debugoverlay.Text( self:GetPos() + spacing, "ERROR", FrameTime() * 2 )
+	end
+	spacing = spacing + Vector(0,0,8)
+	debugoverlay.Text( self:GetPos() + spacing, "HitPoints: " .. tostring(self:Health()), FrameTime() * 2 )
+	spacing = spacing + Vector(0,0,8)
+	debugoverlay.Text( self:GetPos() + spacing, tostring(self), FrameTime() * 2 )
 end
 
 function ENT:SoundThink()
@@ -342,15 +345,18 @@ end
 function ENT:FindTarget()
 	-- Search around us for entities
 	-- This can be done any way you want eg. ents.FindInCone() to replicate eyesight
-	local _ents = ents.FindInSphere( self:GetPos(), 1000 )
-	-- Here we loop through every entity the above search finds and see if it's the one we want
-	for k, v in pairs( _ents ) do
-		if ( v:IsPlayer() ) then
-			-- We found one so lets set it as our enemy and return true
-			self:SetTarget( v )
-			return true
-		end
+	
+	-- We usually only target players, so looping through player.GetAllPlaying and 
+	-- doing a (squared) distance check is faster than using ents.FindInSphere.
+	local _players = player.GetAllPlaying()
+	
+	for k, v in pairs(_players) do
+		if v:GetPos():DistToSqr(self:GetPos()) > 1000000 then continue end -- Out of range, ignore.
+		
+		self:SetTarget(v) -- Found one, set it as the target and return true.
+		return true
 	end
+	
 	-- We found nothing so we will set our enemy as nil ( nothing ) and return false
 	self:SetTarget( nil )
 	return false
@@ -379,7 +385,7 @@ function ENT:RunBehaviour()
 					if self.DeadWalkingCount ~= 0 then
 						self.DeadWalkingCount = 0
 					end
-				elseif pathResult == "timeout" then --asume pathing timedout, maybe we are stuck maybe we are blocked by barricades
+				elseif pathResult == "timeout" then --assume pathing timed out, maybe we are stuck maybe we are blocked by barricades
 					local barricade, dir = self:CheckForBarricade()
 					if barricade then
 						self:OnBarricadeBlocking( barricade, dir )
@@ -472,8 +478,8 @@ function ENT:Draw()
 			cam.End3D()
 		end
 	end
-	if GetConVar( "nz_zombie_debug" ):GetBool() then
-		render.DrawWireframeBox(self:GetPos(), Angle(0,0,0), self:OBBMins(), self:OBBMaxs(), Color(255,0,0), true)
+	if debugEnabled then
+		render.DrawWireframeBox(self:GetPos(), angle_zero, self:OBBMins(), self:OBBMaxs(), Color(255,0,0), true)
 		render.DrawWireframeSphere(self:GetPos(), self:GetAttackRange(), 10, 10, Color(255,165,0), true)
 	end
 end
@@ -794,18 +800,18 @@ function ENT:ChaseTarget( options )
 	while ( path:IsValid() and self:HasTarget() and !self:TargetInAttackRange() ) do
 		if ( path:GetAge() > 0.2 ) then					-- Since we are following the player we have to constantly remake the path
 			path:Compute( self, self:GetTarget():GetPos() )-- Compute the path towards the enemy's position again
-			end
+		end
 		path:Update( self )
 
 		--Timeout the pathing so it will rerun the entire behaviour (break barricades etc)
 		if ( path:GetAge() > options.maxage ) then
 			local segment = path:FirstSegment()
-			self.BarricadeCheckDir = segment and segment.forward or Vector(0,0,0)
+			self.BarricadeCheckDir = segment and segment.forward or vector_origin
 			return "timeout"
 		end
 
 		path:Update( self )	-- This function moves the bot along the path
-		if options.draw or GetConVar( "nz_zombie_debug" ):GetBool() then
+		if options.draw or debugEnabled then
 			path:Draw()
 		end
 
@@ -815,7 +821,7 @@ function ENT:ChaseTarget( options )
 		--this will probaly need asjustments to fit the zombies speed
 		if self:GetVelocity():Length2DSqr() > 22500 then scanDist = 30 else scanDist = 20 end
 		--debug section
-		if GetConVar( "nz_zombie_debug" ):GetBool() then
+		if debugEnabled then
 			debugoverlay.Line( self:GetPos(),  path:GetClosestPosition(self:EyePos() + self.loco:GetGroundMotionVector() * scanDist), 0.05, Color(0,0,255,0) )
 			local losColor  = Color(255,0,0)
 			if self:IsLineOfSightClear( self:GetTarget():GetPos() + Vector(0,0,35) ) then
@@ -834,13 +840,13 @@ function ENT:ChaseTarget( options )
 					debugoverlay.Line( v:GetCorner( 1 ),  v:GetCorner( 2 ), 0.05, Color(150,80,0,80), true )
 					debugoverlay.Line( v:GetCorner( 2 ),  v:GetCorner( 3 ), 0.05, Color(150,80,0,80), true )
 				end
-			end ]]--
+			end ]]
 		end
 		--print(self.loco:GetGroundMotionVector(), self:GetForward())
 		local goal = path:GetCurrentGoal()
 
 		--height triggered jumping
-		if path:IsValid() and math.abs(self:GetPos().z - path:GetClosestPosition(self:EyePos() + self.loco:GetGroundMotionVector() * scanDist).z) > 22 and (goal and goal.type != 1) then
+		if math.abs(self:GetPos().z - path:GetClosestPosition(self:EyePos() + self.loco:GetGroundMotionVector() * scanDist).z) > 22 and (goal and goal.type != 1) then
 			self:Jump()
 		end
 		--[[if path:IsValid() and goal.type == 4 then
@@ -853,7 +859,7 @@ function ENT:ChaseTarget( options )
 			if self.loco:IsUsingLadder() then
 				self.loco:SetVelocity( self.loco:GetVelocity() + Vector( 0, 0, 50 ) )
 			end
-		end --]]
+		end ]]
 
 		-- If we're stuck, then call the HandleStuck function and abandon
 		if ( self.loco:IsStuck() ) then
@@ -1252,10 +1258,11 @@ end
 function ENT:IsInSight()
 	for _, ply in pairs( player.GetAll() ) do
 		--can player see us or the teleport location
-		if ply:Alive() and ply:IsLineOfSightClear( self ) then
-			if ply:GetAimVector():Dot((self:GetPos() - ply:GetPos()):GetNormalized()) > 0 then
-				return true
-			end
+		--if ply:Alive() and ply:IsLineOfSightClear( self ) then
+		if !ply:Alive() then continue end
+		
+		if ply:GetAimVector():Dot((self:GetPos() - ply:GetPos()):GetNormalized()) > 0 then
+			return true
 		end
 	end
 end
@@ -1558,13 +1565,22 @@ function ENT:ZombieWaterLevel()
 	local halfSize = self:OBBCenter()
 	local pos2 = pos1 + halfSize
 	local pos3 = pos2 + halfSize
+	
+	if bit.band( util.PointContents(pos3), CONTENTS_WATER + CONTENTS_SLIME ) > 0 then
+		return 3
+	elseif bit.band( util.PointContents(pos2), CONTENTS_WATER + CONTENTS_SLIME ) > 0 then
+		return 2
+	elseif bit.band( util.PointContents(pos1), CONTENTS_WATER + CONTENTS_SLIME ) > 0 then
+		return 1
+	end
+	--[[
 	if bit.band( util.PointContents( pos3 ), CONTENTS_WATER ) == CONTENTS_WATER or bit.band( util.PointContents( pos3 ), CONTENTS_SLIME ) == CONTENTS_SLIME then
 		return 3
 	elseif bit.band( util.PointContents( pos2 ), CONTENTS_WATER ) == CONTENTS_WATER or bit.band( util.PointContents( pos2 ), CONTENTS_SLIME ) == CONTENTS_SLIME then
 		return 2
 	elseif bit.band( util.PointContents( pos1 ), CONTENTS_WATER ) == CONTENTS_WATER or bit.band( util.PointContents( pos1 ), CONTENTS_SLIME ) == CONTENTS_SLIME then
 		return 1
-	end
+	end]]
 
 	return 0
 end
