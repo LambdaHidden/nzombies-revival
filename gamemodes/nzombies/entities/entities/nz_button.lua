@@ -117,7 +117,7 @@ if CLIENT then
 end
 
 function ENT:Activation(caller, duration, cooldown)
-	--BaseClass.Activation(self, caller, duration, cooldown)
+	BaseClass.Activation(self, caller, duration, cooldown)
 
 	nzDoors:OpenLinkedDoors(self:GetLinkedNZName1())
 	nzDoors:OpenLinkedDoors(self:GetLinkedNZName2())
