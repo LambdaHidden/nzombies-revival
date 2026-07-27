@@ -387,6 +387,9 @@ function ENT:RunBehaviour()
 						self:OnPathTimeOut()
 					end
 				else
+					if not self.DeadWalkingCount then
+						self.DeadWalkingCount = 0
+					end
 					self.DeadWalkingCount = self.DeadWalkingCount + 1
 					if self.DeadWalkingCount >= 5 then
 						if self:IsInSight() then
@@ -595,6 +598,9 @@ function ENT:OnNoTarget()
 			if !self:IsInSight() then
 				self:RespawnZombie()
 			else
+				if not self.DeadWalkingCount then
+					self.DeadWalkingCount = 0
+				end
 				self.DeadWalkingCount = self.DeadWalkingCount + 1
 				if self.DeadWalkingCount >= 5 then
 					local effectData = EffectData()
