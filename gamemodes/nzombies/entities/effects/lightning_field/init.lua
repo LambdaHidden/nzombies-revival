@@ -14,6 +14,12 @@ function EFFECT:Init( data )
 	self.Size = data:GetRadius() or 1
 	self.MaxArcs = 2
 	self.Parent = data:GetEntity()
+	
+	if not IsValid(self.Parent) then
+		self.KILL = true
+		return
+	end
+	
 	self.Frequency = data:GetMagnitude()/10 or 0.01
 	self.Pos = self.Parent:GetPos() + self.Parent:OBBCenter()
 	self.OBBMax = self.Parent:OBBMaxs()
@@ -56,6 +62,9 @@ function EFFECT:Think()
 		--self.Pos = self.Parent:GetPos()
 	end
 
+	if not self.Life then
+		self.Life = 0
+	end
 	self.Life = self.Life + FrameTime()
 	--self.Alpha = 255 * ( 1 - self.Life )
 
