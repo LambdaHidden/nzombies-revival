@@ -171,8 +171,11 @@ nzPerks:NewPerk("speed", {
 
 nzPerks:NewPerk("pap", {
 	name = "Pack-a-Punch",
-	off_model = "models/alig96/perks/packapunch/packapunch.mdl", //Find a new model.
-	on_model = "models/alig96/perks/packapunch/packapunch.mdl",
+	model = "models/alig96/perks/packapunch/packapunch.mdl", -- Got your new model right here -Hidden XOXO.
+	off_skin = 0,
+	on_skin = 1,
+	--off_model = "models/alig96/perks/packapunch/packapunch.mdl",
+	--on_model = "models/alig96/perks/packapunch/packapunch.mdl",
 	price = 0,
 	specialmachine = true, -- Prevents players from getting the perk when they buy it
 	nobuy = true, -- A "Buy" event won't run when this is used (we do that ourselves in its function)
@@ -316,8 +319,11 @@ nzPerks:NewPerk("pap", {
 
 nzPerks:NewPerk("dtap2", {
 	name = "Double Tap II",
-	off_model = "models/alig96/perks/doubletap2/doubletap2_off.mdl",
-	on_model = "models/alig96/perks/doubletap2/doubletap2.mdl",
+	model = "models/alig96/perks/doubletap2/doubletap2.mdl",
+	on_skin = 1,
+	off_skin = 0,
+	--off_model = "models/alig96/perks/doubletap2/doubletap2_off.mdl",
+	--on_model = "models/alig96/perks/doubletap2/doubletap2.mdl",
 	price = 2000,
 	material = "models/perk_bottle/c_perk_bottle_dtap2",
 	icon = Material("perk_icons/dtap2.png", "smooth unlitgeneric"),
@@ -354,8 +360,11 @@ nzPerks:NewPerk("dtap2", {
 
 nzPerks:NewPerk("staminup", {
 	name = "Stamin-Up",
-	off_model = "models/alig96/perks/staminup/staminup_off.mdl",
-	on_model = "models/alig96/perks/staminup/staminup.mdl",
+	model = "models/alig96/perks/staminup/staminup.mdl",
+	on_skin = 1,
+	off_skin = 0,
+	--off_model = "models/alig96/perks/staminup/staminup_off.mdl",
+	--on_model = "models/alig96/perks/staminup/staminup.mdl",
 	price = 2000,
 	material = "models/perk_bottle/c_perk_bottle_stamin",
 	icon = Material("perk_icons/staminup.png", "smooth unlitgeneric"),
@@ -377,8 +386,11 @@ nzPerks:NewPerk("staminup", {
 
 nzPerks:NewPerk("phd", {
 	name = "PhD Flopper",
-	off_model = "models/alig96/perks/phd/phdflopper_off.mdl",
-	on_model = "models/alig96/perks/phd/phdflopper.mdl",
+	model = "models/alig96/perks/phd/phdflopper.mdl",
+	on_skin = 1,
+	off_skin = 0,
+	--off_model = "models/alig96/perks/phd/phdflopper_off.mdl",
+	--on_model = "models/alig96/perks/phd/phdflopper.mdl",
 	price = 2000,
 	material = "models/perk_bottle/c_perk_bottle_phd",
 	icon = Material("perk_icons/phd.png", "smooth unlitgeneric"),
@@ -391,8 +403,11 @@ nzPerks:NewPerk("phd", {
 
 nzPerks:NewPerk("deadshot", {
 	name = "Deadshot Daiquiri",
-	off_model = "models/alig96/perks/deadshot/deadshot_off.mdl",
-	on_model = "models/alig96/perks/deadshot/deadshot.mdl",
+	model = "models/alig96/perks/deadshot/deadshot.mdl",
+	on_skin = 1,
+	off_skin = 0,
+	--off_model = "models/alig96/perks/deadshot/deadshot_off.mdl",
+	--on_model = "models/alig96/perks/deadshot/deadshot.mdl",
 	price = 1500,
 	material = "models/perk_bottle/c_perk_bottle_deadshot",
 	icon = Material("perk_icons/deadshot.png", "smooth unlitgeneric"),
@@ -405,8 +420,11 @@ nzPerks:NewPerk("deadshot", {
 
 nzPerks:NewPerk("mulekick", {
 	name = "Mule Kick",
-	off_model = "models/alig96/perks/mulekick/mulekick_off.mdl",
-	on_model = "models/alig96/perks/mulekick/mulekick.mdl",
+	model = "models/alig96/perks/mulekick/mulekick.mdl",
+	off_skin = 0,
+	on_skin = 1,
+	--off_model = "models/alig96/perks/mulekick/mulekick_off.mdl",
+	--on_model = "models/alig96/perks/mulekick/mulekick.mdl",
 	price = 4000,
 	material = "models/perk_bottle/c_perk_bottle_mulekick",
 	icon = Material("perk_icons/mulekick.png", "smooth unlitgeneric"),
@@ -424,8 +442,11 @@ nzPerks:NewPerk("mulekick", {
 
 nzPerks:NewPerk("tombstone", {
 	name = "Tombstone Soda",
-	off_model = "models/alig96/perks/tombstone/tombstone_off.mdl",
-	on_model = "models/alig96/perks/tombstone/tombstone.mdl",
+	model = "models/alig96/perks/tombstone/tombstone.mdl",
+	on_skin = 1,
+	off_skin = 0,
+	--off_model = "models/alig96/perks/tombstone/tombstone_off.mdl",
+	--on_model = "models/alig96/perks/tombstone/tombstone.mdl",
 	price = 2000,
 	material = "models/perk_bottle/c_perk_bottle_tombstone",
 	icon = Material("perk_icons/tombstone.png", "smooth unlitgeneric"),
@@ -438,8 +459,11 @@ nzPerks:NewPerk("tombstone", {
 
 nzPerks:NewPerk("whoswho", {
 	name = "Who's Who",
-	off_model = "models/alig96/perks/whoswho/whoswho_off.mdl",
-	on_model = "models/alig96/perks/whoswho/whoswho.mdl",
+	model = "models/alig96/perks/whoswho/whoswho.mdl",
+	on_skin = 1,
+	off_skin = 0,
+	--off_model = "models/alig96/perks/whoswho/whoswho_off.mdl",
+	--on_model = "models/alig96/perks/whoswho/whoswho.mdl",
 	price = 15000,
 	material = "models/perk_bottle/c_perk_bottle_whoswho",
 	icon = Material("perk_icons/whoswho.png", "smooth unlitgeneric"),
@@ -452,8 +476,11 @@ nzPerks:NewPerk("whoswho", {
 
 nzPerks:NewPerk("cherry", {
 	name = "Electric Cherry",
-	off_model = "models/alig96/perks/cherry/cherry_off.mdl",
-	on_model = "models/alig96/perks/cherry/cherry.mdl",
+	model = "models/alig96/perks/cherry/cherry.mdl",
+	on_skin = 1,
+	off_skin = 0,
+	--off_model = "models/alig96/perks/cherry/cherry_off.mdl",
+	--on_model = "models/alig96/perks/cherry/cherry.mdl",
 	price = 2000,
 	material = "models/perk_bottle/c_perk_bottle_cherry",
 	icon = Material("perk_icons/cherry.png", "smooth unlitgeneric"),
@@ -466,8 +493,11 @@ nzPerks:NewPerk("cherry", {
 
 nzPerks:NewPerk("vulture", {
 	name = "Vulture Aid Elixir",
-	off_model = "models/alig96/perks/vulture/vultureaid_off.mdl",
-	on_model = "models/alig96/perks/vulture/vultureaid.mdl",
+	model = "models/alig96/perks/vulture/vultureaid.mdl",
+	on_skin = 1,
+	off_skin = 0,
+	--off_model = "models/alig96/perks/vulture/vultureaid_off.mdl",
+	--on_model = "models/alig96/perks/vulture/vultureaid.mdl",
 	price = 3000,
 	material = "models/perk_bottle/c_perk_bottle_vulture",
 	icon = Material("perk_icons/vulture.png", "smooth unlitgeneric"),
