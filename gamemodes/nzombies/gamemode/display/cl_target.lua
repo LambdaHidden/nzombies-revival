@@ -106,7 +106,7 @@ local traceents = {
 			text = "The Wunderfizz Orb is currently at another location"
 		elseif ent:GetBeingUsed() then
 			if ent:GetUser() == LocalPlayer() and ent:GetPerkID() != "" and !ent:GetIsTeddy() then
-				text = "Press E to take "..nzPerks:Get(ent:GetPerkID()).name.."from the Wunderfizz"
+				text = "Press E to take "..nzPerks:Get(ent:GetPerkID()).name.." from the Wunderfizz"
 			else
 				text = "Currently in use"
 			end
@@ -119,6 +119,17 @@ local traceents = {
 		end
 
 		return text
+	end,
+	["wunderfizz_windup"] = function(ent)
+		if ent:GetPerkID() == "teddy" then
+			return ""
+		end
+		
+		if ent:GetUser() != LocalPlayer() or ent:GetWinding() then
+			return "Currently in use"
+		end
+		
+		return "Press E to take "..nzPerks:Get(ent:GetPerkID()).name.." from the Wunderfizz"
 	end,
 }
 
