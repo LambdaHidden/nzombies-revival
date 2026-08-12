@@ -184,6 +184,7 @@ nzPerks:NewPerk("pap", {
 	color = Color(200, 220, 220),
 	condition = function(self, ply, machine)
 		local wep = ply:GetActiveWeapon()
+		if !IsValid(wep) then return false end
 		if (!wep:HasNZModifier("pap") or wep:CanRerollPaP()) and !machine:GetBeingUsed() then
 			local reroll = false
 			if wep:HasNZModifier("pap") and wep:CanRerollPaP() then
@@ -223,61 +224,34 @@ nzPerks:NewPerk("pap", {
 
 			wep:Remove()
 			local wep = ents.Create("pap_weapon_fly")
-			local startpos = machine:GetPos() + ang:Forward()*30 + ang:Up()*25 + ang:Right()*-3
+			local startpos = machine:GetPos() + ang:Forward()*30 + ang:Up()*34
 			wep:SetPos(startpos)
 			wep:SetAngles(ang + Angle(0,90,0))
-			wep.WepClass = class
+			--wep.WepClass = class
+			wep:SetWeaponClass(class)
 			wep:Spawn()
-			local weapon = weapons.Get(class)
-			local model = (weapon and weapon.WM or weapon.WorldModel) or "models/weapons/w_rif_ak47.mdl"
-			if !util.IsValidModel(model) then model = "models/weapons/w_rif_ak47.mdl" end
-			wep:SetModel(model)
 			wep.machine = machine
 			wep.Owner = ply
-			wep:SetMoveType( MOVETYPE_FLY )
+			
+			wep:SetLocalVelocity(ang:Forward()*-30)
 
-			--wep:SetNotSolid(true)
-			--wep:SetGravity(0.000001)
-			--wep:SetCollisionBounds(Vector(0,0,0), Vector(0,0,0))
-			timer.Simple(0.5, function()
-				if IsValid(wep) then
-					wep:SetLocalVelocity(ang:Forward()*-30)
-				end
-			end)
-			timer.Simple(1.8, function()
+			timer.Simple(1.3, function()
 				if IsValid(wep) then
 					wep:SetMoveType(MOVETYPE_NONE)
-					wep:SetLocalVelocity(Vector(0,0,0))
+					wep:SetLocalVelocity(vector_origin)
 				end
 			end)
 			timer.Simple(3, function()
 				if IsValid(wep) and IsValid(machine) then
 					local weapon = weapons.Get(class)
 					if weapon and weapon.NZPaPReplacement and weapons.Get(weapon.NZPaPReplacement) then
-						local pos, ang = wep:GetPos(), wep:GetAngles()
-						wep:Remove()
-						wep = ents.Create("pap_weapon_fly") -- Recreate a new entity with the replacement class instead
-						wep:SetPos(pos)
-						wep:SetAngles(ang)
-						wep.WepClass = weapon.NZPaPReplacement
-						wep:Spawn()
-						wep.TriggerPos = startpos
-						
-						local replacewep = weapons.Get(weapon.NZPaPReplacement)
-						local model = (replacewep and replacewep.WM or replacewep.WorldModel) or "models/weapons/w_rif_ak47.mdl"
-						if !util.IsValidModel(model) then model = "models/weapons/w_rif_ak47.mdl" end
-						wep:SetModel(model) -- Changing the model and name
-						wep.machine = machine
-						wep.Owner = ply
-						wep:SetMoveType( MOVETYPE_FLY )
+						wep:SetWeaponClass(weapon.NZPaPReplacement)
 					end
 					
 					--print(wep, wep.WepClass, wep:GetModel())
 				
 					machine:EmitSound("nz/machines/pap_ready.wav")
-					wep:SetCollisionBounds(Vector(0,0,0), Vector(0,0,0))
-					wep:SetMoveType(MOVETYPE_FLY)
-					wep:SetGravity(0.000001)
+					wep:SetMoveType(MOVETYPE_NOCLIP)
 					wep:SetLocalVelocity(ang:Forward()*30)
 					--print(ang:Forward()*30, wep:GetVelocity())
 					wep:CreateTriggerZone(reroll)
@@ -290,7 +264,7 @@ nzPerks:NewPerk("pap", {
 					--print(wep:GetMoveType())
 					--print(ang:Forward()*30, wep:GetVelocity())
 					wep:SetMoveType(MOVETYPE_NONE)
-					wep:SetLocalVelocity(Vector(0,0,0))
+					wep:SetLocalVelocity(vector_origin)
 				end
 			end)
 			timer.Simple(10, function()
