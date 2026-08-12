@@ -28,6 +28,7 @@ SWEP.AdminSpawnable		= false
 
 SWEP.HoldType = "slam"
 
+SWEP.ViewModelFOV	= 72
 SWEP.ViewModel	= "models/weapons/c_monkey_bomb.mdl"
 SWEP.WorldModel	= "models/nzprops/monkey_bomb.mdl"
 SWEP.UseHands = true
@@ -45,48 +46,19 @@ SWEP.Secondary.Ammo			= "none"
 
 SWEP.NextReload				= 1
 
-SWEP.PrimeSounds = {
-	"nz/monkey/voice_prime/raise_vox_00.wav",
-	"nz/monkey/voice_prime/raise_vox_01.wav",
-	"nz/monkey/voice_prime/raise_vox_02.wav",
-	"nz/monkey/voice_prime/raise_vox_03.wav",
-	"nz/monkey/voice_prime/raise_vox_04.wav",
-	"nz/monkey/voice_prime/raise_vox_05.wav",
-	"nz/monkey/voice_prime/raise_vox_06.wav",
-	"nz/monkey/voice_prime/raise_vox_07.wav",
-	"nz/monkey/voice_prime/raise_vox_08.wav",
-	"nz/monkey/voice_prime/raise_vox_09.wav",
-	"nz/monkey/voice_prime/raise_vox_10.wav",
-	"nz/monkey/voice_prime/raise_vox_11.wav",
-}
-
 function SWEP:Initialize()
-
 	self:SetHoldType( "slam" )
-
 end
 
 function SWEP:Deploy()
 	self:SendWeaponAnim(ACT_VM_DRAW)
+	
 	self:SetHoldType( "slam" )
-	timer.Simple(2, function() if IsValid(self) then self:SetHoldType("grenade") end end)
-	if CLIENT then
-		local sound = self.PrimeSounds[math.random(1,#self.PrimeSounds)]
-		surface.PlaySound(sound)
-		timer.Simple(1.2, function() 
-			if IsValid(self) then
-				surface.PlaySound("nz/monkey/hat1.wav")
-				local i = 0
-				timer.Create("MonkeyCymbalViewmodel", 0.23, 7, function()
-					surface.PlaySound("nz/monkey/cymbals/monk_cymb_0"..math.Round(i/2)..".wav")
-					i = i < 8 and i + 1 or 8
-				end)
-			end
-		end)
-		
-	else
-		self:CallOnClient("Deploy")
-	end
+	timer.Simple(2, function() 
+		if IsValid(self) then 
+			self:SetHoldType("grenade") 
+		end 
+	end)
 end
 
 function SWEP:PrimaryAttack()
@@ -115,19 +87,11 @@ function SWEP:ThrowBomb(force)
 	
 end
 
-function SWEP:PostDrawViewModel()
-
-end
-
-function SWEP:DrawWorldModel()
-
-end
-
 function SWEP:OnRemove()
 	
 end
 
-function SWEP:GetViewModelPosition( pos, ang )
+--[[function SWEP:GetViewModelPosition( pos, ang )
  
  	local newpos = LocalPlayer():EyePos()
 	local newang = LocalPlayer():EyeAngles()
@@ -137,4 +101,77 @@ function SWEP:GetViewModelPosition( pos, ang )
 	
 	return newpos, newang
  
-end
+end]]
+
+sound.Add(
+{
+    name = "Weapon_nZ_MonkeyBomb.RaiseVox",
+    channel = CHAN_VOICE,
+    volume = 1.0,
+    soundlevel = 60,
+    sound = {
+		"nz/monkey/voice_prime/raise_vox_00.wav",
+		"nz/monkey/voice_prime/raise_vox_01.wav",
+		"nz/monkey/voice_prime/raise_vox_02.wav",
+		"nz/monkey/voice_prime/raise_vox_03.wav",
+		"nz/monkey/voice_prime/raise_vox_04.wav",
+		"nz/monkey/voice_prime/raise_vox_05.wav",
+		"nz/monkey/voice_prime/raise_vox_06.wav",
+		"nz/monkey/voice_prime/raise_vox_07.wav",
+		"nz/monkey/voice_prime/raise_vox_08.wav",
+		"nz/monkey/voice_prime/raise_vox_09.wav",
+		"nz/monkey/voice_prime/raise_vox_10.wav",
+		"nz/monkey/voice_prime/raise_vox_11.wav"
+	}
+})
+sound.Add(
+{
+    name = "Weapon_nZ_MonkeyBomb.Knob",
+    channel = CHAN_ITEM,
+    volume = 1.0,
+    soundlevel = 60,
+    sound = "nz/monkey/wind_monkeybomb.wav"
+})
+sound.Add(
+{
+    name = "Weapon_nZ_MonkeyBomb.Hat",
+    channel = CHAN_WEAPON,
+    volume = 1.0,
+    soundlevel = 60,
+    sound = "nz/monkey/hat1.wav"
+})
+sound.Add(
+{
+    name = "Weapon_nZ_MonkeyBomb.Cymbal",
+    channel = CHAN_ITEM,
+    volume = 1.0,
+    soundlevel = 70,
+    sound = {
+		"nz/monkey/cymbals/monk_cymb_00.wav",
+		"nz/monkey/cymbals/monk_cymb_01.wav"
+	}
+})
+sound.Add(
+{
+    name = "Weapon_nZ_MonkeyBomb.Cymbal1",
+    channel = CHAN_ITEM,
+    volume = 1.0,
+    soundlevel = 70,
+    sound = "nz/monkey/cymbals/monk_cymb_02.wav"
+})
+sound.Add(
+{
+    name = "Weapon_nZ_MonkeyBomb.Cymbal2",
+    channel = CHAN_ITEM,
+    volume = 1.0,
+    soundlevel = 70,
+    sound = "nz/monkey/cymbals/monk_cymb_03.wav"
+})
+sound.Add(
+{
+    name = "Weapon_nZ_MonkeyBomb.Cymbal3",
+    channel = CHAN_ITEM,
+    volume = 1.0,
+    soundlevel = 70,
+    sound = "nz/monkey/cymbals/monk_cymb_04.wav"
+})
