@@ -144,3 +144,21 @@ function SWEP:Holster( wep )
 	--if not IsFirstTimePredicted() then return end
 	return true
 end
+
+sound.Add(
+{
+    name = "Weapon_Semtex.Pin",
+    channel = CHAN_WEAPON,
+    volume = 1.0,
+    soundlevel = 80,
+    sound = "nz/m67/semtex_pin_pull.mp3"
+})
+
+sound.Add(
+{
+    name = "Weapon_Semtex.Charge",
+    channel = CHAN_WEAPON,
+    volume = 1.0,
+    soundlevel = 80,
+    sound = "nz/m67/semtex_charge.mp3"
+})
