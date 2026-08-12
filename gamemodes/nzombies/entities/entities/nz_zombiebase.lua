@@ -3,7 +3,7 @@ AddCSLuaFile()
 --debug cvars
 CreateConVar( "nz_zombie_debug", "0", { FCVAR_REPLICATED, FCVAR_ARCHIVE, FCVAR_CHEAT } )
 
-local debugEnabled = false
+local debugEnabled = cvars.Bool("nz_zombie_debug")
 cvars.AddChangeCallback( "nz_zombie_debug", function(cvar, old, new) debugEnabled = tobool(new) end )
 
 --[[
@@ -393,9 +393,6 @@ function ENT:RunBehaviour()
 						self:OnPathTimeOut()
 					end
 				else
-					if not self.DeadWalkingCount then
-						self.DeadWalkingCount = 0
-					end
 					self.DeadWalkingCount = self.DeadWalkingCount + 1
 					if self.DeadWalkingCount >= 5 then
 						if self:IsInSight() then
@@ -604,9 +601,6 @@ function ENT:OnNoTarget()
 			if !self:IsInSight() then
 				self:RespawnZombie()
 			else
-				if not self.DeadWalkingCount then
-					self.DeadWalkingCount = 0
-				end
 				self.DeadWalkingCount = self.DeadWalkingCount + 1
 				if self.DeadWalkingCount >= 5 then
 					local effectData = EffectData()
