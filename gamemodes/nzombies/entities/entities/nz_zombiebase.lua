@@ -217,11 +217,6 @@ function ENT:Think()
 			--self:SetSolidMask(MASK_NPCSOLID_BRUSHONLY)
 		end
 
-		--this is a very costly operation so we only do it every second
-		if self:GetLastTargetCheck() + 1 < CurTime() then
-			self:SetTarget(self:GetPriorityTarget())
-		end
-
 		-- We don't want to say we're stuck if it's because we're attacking or timed out
 		if !self:GetAttacking() and !self:GetTimedOut() and self:GetLastPostionSave() + 4 < CurTime() then
 			if self:GetPos():DistToSqr( self:GetStuckAt() ) < 100 then
@@ -371,7 +366,7 @@ function ENT:RunBehaviour()
 			self:SetTimedOut(false)
 			if self:HasTarget() then
 				local pathResult = self:ChaseTarget( {
-					maxage = 0.1,
+					maxage = 0.2,
 					draw = false,
 					tolerance = self:GetSpecialAnimation() and 0 or ((self:GetAttackRange() -30) > 0 ) and self:GetAttackRange() - 20
 				} )
@@ -497,6 +492,8 @@ function ENT:SpawnZombie()
 		ErrorNoHalt("Zombie ["..self:GetClass().."]["..self:EntIndex().."] spawned too far away from a navmesh!")
 		self:RespawnZombie()
 	end
+	
+	self:SetTarget(self:GetPriorityTarget())
 
 	self:OnSpawn()
 end
@@ -743,23 +740,19 @@ function ENT:GetPriorityTarget()
 	self:SetLastTargetCheck( CurTime() )
 
 	--if you really would want something that atracts the zombies from everywhere you would need something like this
-	local allEnts = ents.GetAll()
-	--[[for _, ent in pairs(allEnts) do
-		if ent:GetTargetPriority() == TARGET_PRIORITY_ALWAYS and self:IsValidTarget(ent) then
-			return ent
-		end
-	end]]
-
-	-- Disabled the above for for now since it just might be better to use that same loop for everything
+	--local allEnts = ents.GetAll()
+	--Use a spacial partition to avoid looking through all entities, which should be more efficient.
+	local extents = Vector(1, 1, 1) * self:GetTargetCheckRange()
+	local allEnts = ents.FindInBox(self:GetPos() - extents, self:GetPos() + extents)
 
 	local bestTarget = nil
 	local highestPriority = TARGET_PRIORITY_NONE
 	local maxdistsqr = self:GetTargetCheckRange()^2
 	local targetDist = maxdistsqr + 10
 
-	--local possibleTargets = ents.FindInSphere( self:GetPos(), self:GetTargetCheckRange())
-
-	for _, target in pairs(allEnts) do
+	--for _, target in ipairs(allEnts) do
+	for i = 1, #allEnts do
+		local target = allEnts[i]
 		if self:IsValidTarget(target) and !self:IsIgnoredTarget(target) then
 
 			if target:GetTargetPriority() == TARGET_PRIORITY_ALWAYS then return target end
@@ -767,11 +760,11 @@ function ENT:GetPriorityTarget()
 			local dist = self:GetRangeSquaredTo( target:GetPos() )
 			if maxdistsqr <= 0 or dist <= maxdistsqr then -- 0 distance is no distance restrictions
 				local priority = target:GetTargetPriority()
-				if target:GetTargetPriority() > highestPriority then
+				if priority > highestPriority then
 					highestPriority = priority
 					bestTarget = target
 					targetDist = dist
-				elseif target:GetTargetPriority() == highestPriority then
+				elseif priority == highestPriority then
 					if targetDist > dist then
 						highestPriority = priority
 						bestTarget = target
@@ -798,7 +791,7 @@ function ENT:ChaseTarget( options )
 
 	if ( !IsValid(path) ) then return "failed" end
 	while ( path:IsValid() and self:HasTarget() and !self:TargetInAttackRange() ) do
-		if ( path:GetAge() > 0.2 ) then					-- Since we are following the player we have to constantly remake the path
+		if ( path:GetAge() > 0.5 ) then					-- Since we are following the player we have to constantly remake the path
 			path:Compute( self, self:GetTarget():GetPos() )-- Compute the path towards the enemy's position again
 		end
 		path:Update( self )
@@ -883,7 +876,7 @@ function ENT:ChaseTargetPath( options )
 
 	options = options or {}
 
-	local path = Path( "Follow" )
+	local path = Path( "Chase" )
 	path:SetMinLookAheadDistance( options.lookahead or 300 )
 	path:SetGoalTolerance( options.tolerance or 30 )
 
