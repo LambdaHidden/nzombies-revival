@@ -7,7 +7,7 @@ end
 
 if CLIENT then
 
-	SWEP.PrintName     	    = "Monkey Bomb"			
+	SWEP.PrintName     	    = "Monkey Bomb"
 	SWEP.Slot				= 1
 	SWEP.SlotPos			= 1
 	SWEP.DrawAmmo			= false
@@ -15,6 +15,7 @@ if CLIENT then
 	
 	SWEP.Category			= "nZombies"
 
+	SWEP.NZHudIcon = Material("monkey_bomb.png", "unlitgeneric smooth")
 end
 
 
